@@ -1,6 +1,6 @@
 package dev.uktcteam.hackathon.security;
 
-import dev.uktcteam.hackathon.repositories.UserRepository;
+import dev.uktcteam.hackathon.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
