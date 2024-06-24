@@ -1,0 +1,20 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://denitsu:Denis123@cluster0.p9d8mv2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: hackathon
+      auto-index-creation: true
+
+server:
+  error:
+    include-message: always
+  port: 8080
+
+application:
+  security:
+    jwt:
+      secret-key: 316c0a2a82b1cda7e48bfd32737b7d38043c574be0cbf92180f7a57fb35e5b40
+      expiration: 300000 # 5 min
+    refresh-token:
+      secret-key: 3FDC8124AE03656BFEFABC3C925B18372147D12FA177885827D00A16A73A9014
+      expiration: 864000000 # 10 days
