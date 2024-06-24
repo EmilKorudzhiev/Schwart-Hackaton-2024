@@ -1,1 +1,1 @@
-# Schwart-Hackaton-2024
+# Schwarz-Hackaton-2024
