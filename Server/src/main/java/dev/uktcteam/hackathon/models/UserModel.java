@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Data
@@ -65,6 +66,7 @@ public class UserModel implements UserDetails {
             name = "role",
             nullable = false
     )
+    @Enumerated(STRING)
     private Role role;
 
     @Override
