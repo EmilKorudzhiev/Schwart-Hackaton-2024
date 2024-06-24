@@ -1,33 +1,70 @@
 package dev.uktcteam.hackathon.models;
 
 import dev.uktcteam.hackathon.enums.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+import static jakarta.persistence.GenerationType.SEQUENCE;
+
 @Data
-@Document("user")
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "User")
+@Table(
+        name = "user_",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_email_unique", columnNames = "email"),
+        }
+)
 public class UserModel implements UserDetails {
 
     @Id
-    private String uid;
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "user_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    private Long uid;
 
+    @Column(
+            name = "username",
+            nullable = false
+    )
     private String username;
 
-    @Indexed(unique = true)
+    @Column(
+            name = "email",
+            nullable = false,
+            unique = true
+    )
     private String email;
 
+    @Column(
+            name = "password",
+            nullable = false
+    )
     private String password;
 
+    @Column(
+            name = "role",
+            nullable = false
+    )
     private Role role;
 
     @Override

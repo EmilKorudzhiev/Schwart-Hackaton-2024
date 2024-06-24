@@ -1,9 +1,22 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://denitsu:Denis123@cluster0.p9d8mv2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      database: hackathon
-      auto-index-creation: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hackathon
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 8MB
 
 server:
   error:

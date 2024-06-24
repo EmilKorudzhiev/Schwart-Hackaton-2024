@@ -14,7 +14,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<UserModel> getUser(String id) {
+    public Optional<UserModel> getUser(Long id) {
         return userRepository.findById(id);
     }
 
