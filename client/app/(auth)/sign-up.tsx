@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, TextInput, View, Text } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 
 export default function TabOneScreen() {
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
 
   const [credentials, setCredentials] = useState({
+    username: "",
     email: "",
     password: "",
   });
+
+  const handleNameChange = (text: string) => {
+    setCredentials({ ...credentials, username: text });
+  };
 
   const handleEmailChange = (text: string) => {
     setCredentials({ ...credentials, email: text });
@@ -21,7 +26,7 @@ export default function TabOneScreen() {
   };
 
   const handleSubmit = async () => {
-    const response = signIn(credentials.email, credentials.password);
+    const response = signUp(credentials.username, credentials.email, credentials.password);
     response.then((data: void | { error: string }) => {
       if (data) {
         console.log(data.error);
@@ -39,6 +44,12 @@ export default function TabOneScreen() {
         <View style={styles.form}>
         <Text style={styles.title}>LOGIN</Text>
         <View style={styles.inputContainer}>
+        <TextInput
+            value={credentials.username}
+            onChangeText={handleNameChange}
+            placeholder="Email"
+            style={styles.input}
+          />
           <TextInput
             value={credentials.email}
             onChangeText={handleEmailChange}
@@ -53,7 +64,6 @@ export default function TabOneScreen() {
             style={styles.input}
           />
           <TouchableOpacity style={styles.button} onPress={handleSubmit}><Text>SIGN IN</Text></TouchableOpacity>
-          <Link href="(auth)/sign-up">Here</Link>
         </View>
         </View>
        
