@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    
     const loadStorageData = async () => {
       try {
         const storedUser = await SecureStore.getItemAsync('user');
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (username: string, email: string, password: string) => {
     try {
-      const response = await axios.post('http://192.168.141.171:8080/api/v1/auth/register', { username, email, password });
+      const response = await axios.post('http://192.168.216.171:8080/api/v1/auth/register', { username, email, password });
       
       await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
       await SecureStore.setItemAsync('accessToken', response.data.access_token);
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await axios.post('http://192.168.141.171:8080/api/v1/auth/authenticate', { email, password });
+      const response = await axios.post('http://192.168.216.171:8080/api/v1/auth/authenticate', { email, password });
       
       await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
       await SecureStore.setItemAsync('accessToken', response.data.access_token);
@@ -105,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshAccessToken = useCallback(async (refreshToken: string) => {
     try {
-      const response = await axios.post('http://192.168.141.171:8080/api/v1/auth/refresh', { refreshToken });
+      const response = await axios.post('http://192.168.216.171:8080/api/v1/auth/refresh', { refreshToken });
       const { accessToken: newAccessToken } = response.data;
       await SecureStore.setItemAsync('accessToken', newAccessToken);
       setAccessToken(newAccessToken);
