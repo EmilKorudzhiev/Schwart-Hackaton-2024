@@ -47,13 +47,13 @@ export default function CartScreen() {
 
     const allProductsScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={products.filter(prod => !(prod.added))} setCart={setProducts}/>
+            <ProductList products={products.filter(prod => !(prod.added))} />
         </View>
     );
 
     const cartScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={products.filter(prod => prod.added)} setCart={setProducts}/>
+            <ProductList products={products.filter(prod => prod.added)} />
         </View>
     );
     

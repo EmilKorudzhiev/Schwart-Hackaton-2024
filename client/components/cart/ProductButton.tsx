@@ -1,6 +1,6 @@
 import Product from "@/classes/Product";
 import { Text, View } from "../Themed";
-import { Button, StyleSheet, TouchableHighlight } from "react-native";
+import { StyleSheet, TouchableHighlight } from "react-native";
 import { useState } from "react";
 
 interface ProductProps {
