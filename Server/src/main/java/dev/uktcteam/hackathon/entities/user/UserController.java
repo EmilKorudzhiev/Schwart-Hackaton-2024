@@ -17,8 +17,8 @@ public class UserController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasAnyAuthority('admin:read', 'user:read')")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        Optional<User> user = userService.getUser(id);
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+        Optional<UserDto> user = userService.getUser(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

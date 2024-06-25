@@ -1,6 +1,5 @@
-package dev.uktcteam.hackathon.entities.products;
+package dev.uktcteam.hackathon.entities.product;
 
-import dev.uktcteam.hackathon.entities.category.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

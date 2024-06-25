@@ -1,8 +1,7 @@
-package dev.uktcteam.hackathon.entities.products;
+package dev.uktcteam.hackathon.entities.product;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder
