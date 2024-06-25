@@ -1,5 +1,9 @@
 package dev.uktcteam.hackathon.security.auth;
 
+import dev.uktcteam.hackathon.security.auth.requests.AuthenticationRequest;
+import dev.uktcteam.hackathon.security.auth.requests.RegisterRequest;
+import dev.uktcteam.hackathon.security.auth.responses.AuthenticationResponse;
+import dev.uktcteam.hackathon.security.auth.responses.RefreshTokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,12 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
+    @PostMapping("/registerWithRole")
+    public ResponseEntity<AuthenticationResponse> registerWithRole(
+            @RequestBody RegisterRequest requestWithRole
+    ) {
+        return ResponseEntity.ok(authenticationService.registerWithRole(requestWithRole));
+    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
@@ -28,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthenticationResponse> refresh(
+    public ResponseEntity<RefreshTokenResponse> refresh(
             HttpServletRequest request
     ) {
         return ResponseEntity.ok(authenticationService.refreshToken(request));

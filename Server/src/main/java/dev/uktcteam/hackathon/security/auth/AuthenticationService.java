@@ -1,9 +1,14 @@
 package dev.uktcteam.hackathon.security.auth;
 
+import dev.uktcteam.hackathon.entities.user.UserDto;
 import dev.uktcteam.hackathon.enums.Role;
-import dev.uktcteam.hackathon.models.UserModel;
-import dev.uktcteam.hackathon.repositories.UserRepository;
+import dev.uktcteam.hackathon.entities.user.User;
+import dev.uktcteam.hackathon.entities.user.UserRepository;
 import dev.uktcteam.hackathon.security.JwtService;
+import dev.uktcteam.hackathon.security.auth.requests.AuthenticationRequest;
+import dev.uktcteam.hackathon.security.auth.requests.RegisterRequest;
+import dev.uktcteam.hackathon.security.auth.responses.AuthenticationResponse;
+import dev.uktcteam.hackathon.security.auth.responses.RefreshTokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,45 +29,43 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = UserModel.builder()
-                .username(request.getUsername())
+        User user = User.builder()
+                .name(request.getUsername())
                 .email(request.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         var jwtToken = jwtService.generateJwtToken(user);
-        var validityOfJwtToken = jwtService.getExpirationTimeOfJwt(jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse
                 .builder()
                 .accessToken(jwtToken)
-                .accessTokenValidity(validityOfJwtToken)
                 .refreshToken(refreshToken)
+                .user(new UserDto(user))
                 .build();
     }
 
     //For registering other roles
     public AuthenticationResponse registerWithRole(RegisterRequest request) {
-        var user = UserModel.builder()
-                .username(request.getUsername())
+        User user = User.builder()
+                .name(request.getUsername())
                 .email(request.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         var jwtToken = jwtService.generateJwtToken(user);
-        var validityOfJwtToken = jwtService.getExpirationTimeOfJwt(jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse
                 .builder()
                 .accessToken(jwtToken)
-                .accessTokenValidity(validityOfJwtToken)
                 .refreshToken(refreshToken)
+                .user(new UserDto(user))
                 .build();
     }
 
@@ -74,22 +77,21 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmailEqualsIgnoreCase(request.getEmail())
+        User user = userRepository.findByEmailEqualsIgnoreCase(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         var jwtToken = jwtService.generateJwtToken(user);
-        var validityOfJwtToken = jwtService.getExpirationTimeOfJwt(jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponse
                 .builder()
                 .accessToken(jwtToken)
-                .accessTokenValidity(validityOfJwtToken)
                 .refreshToken(refreshToken)
+                .user(new UserDto(user))
                 .build();
     }
 
-    public AuthenticationResponse refreshToken(HttpServletRequest request) {
+    public RefreshTokenResponse refreshToken(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
         final String refreshToken;
         final String username; //User Email in this case (var name is username for consistency)
@@ -104,11 +106,9 @@ public class AuthenticationService {
             if (jwtService.isRefreshTokenValid(refreshToken, userDetails)) {
 
                 var accessToken = jwtService.generateJwtToken(userDetails);
-                var validityOfToken = jwtService.getExpirationTimeOfJwt(accessToken);
 
-                return AuthenticationResponse.builder()
+                return RefreshTokenResponse.builder()
                         .accessToken(accessToken)
-                        .accessTokenValidity(validityOfToken)
                         .refreshToken(refreshToken)
                         .build();
             }
