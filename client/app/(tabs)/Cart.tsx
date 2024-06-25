@@ -22,12 +22,20 @@ async function readCSV(): Promise<Product[]> {
 }
 
 export default function CartScreen() {
-    const [products, setProducts] = useState<Product[]>([]);
     const [rawProductData, setProductData] = useState<Product[]>([]);
     const [cartScreenToggle, setCartScreenToggle] = useState(false);
+    const [products, setProducts] = useState<Product[]>([]);
+
+    const handleEmpty = () => {
+        setCartScreenToggle(true);
+    };
+
+    const handleNotEmpty = () => {
+        setCartScreenToggle(false);
+    };
 
     const handleToggle = () => {
-        setCartScreenToggle(!cartScreenToggle);
+        
     };
 
     useEffect(() => {
@@ -37,24 +45,21 @@ export default function CartScreen() {
         fetchData();
     }, []);
 
-    const [addedProducts, setAddedProducts] = useState<Product[]>([]);
-
     const allProductsScreen = (
         <View style={{flex: 1}}>
-            <SearchBar products={rawProductData} setProducts={setProducts}/>
-            <ProductList products={products} addable={true} addedProducts={addedProducts} setAddedProducts={setAddedProducts}/>
+            <ProductList products={products.filter(prod => !(prod.added))} setCart={setProducts}/>
         </View>
     );
 
     const cartScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={addedProducts} removable={true} addedProducts={addedProducts} setAddedProducts={setAddedProducts}/>
+            <ProductList products={products.filter(prod => prod.added)} setCart={setProducts}/>
         </View>
     );
     
     return (
-        <View>
-            <Button title={cartScreenToggle ? "Open All Products" : `Open My Cart (${addedProducts.length})`} onPress={handleToggle}/>
+        <View style={{flex:1}}>
+            <SearchBar products={rawProductData} setProducts={setProducts} onEmpty={handleEmpty} onNotEmpty={handleNotEmpty}/>
             {cartScreenToggle ?  cartScreen : allProductsScreen}
         </View>
     )

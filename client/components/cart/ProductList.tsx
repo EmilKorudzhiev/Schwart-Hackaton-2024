@@ -1,28 +1,18 @@
-import { Button, ScrollView, StyleSheet, TextInput } from 'react-native';
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed'; 
-import * as fs from 'node:fs/promises';
-import { useEffect, useState } from 'react';
+import { ScrollView } from 'react-native';
 import Product from '@/classes/Product';
 import ProductButton from './ProductButton';
 
 interface ProductListProps {
     products: Product[],
-    addedProducts?: Product[]
-    setAddedProducts?: React.Dispatch<React.SetStateAction<Product[]>>,
-    addable?: boolean,
-    removable?: boolean
+    cart?: Product[]
+    setCart?: React.Dispatch<React.SetStateAction<Product[]>>,
 }
 
-export default function ProductList({products, addedProducts, setAddedProducts, addable, removable}: ProductListProps) {
+export default function ProductList({products, cart, setCart}: ProductListProps) {
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView style={{flex: 1}}>
             {products.map((product) => (
-                <ProductButton product={product} 
-                setAddedProducts={setAddedProducts} 
-                addable={addable} removable={removable}
-                addedProducts={addedProducts}
-                />
+                <ProductButton product={product} />
             ))}
         </ScrollView>
     )

@@ -1,43 +1,38 @@
 import Product from "@/classes/Product";
 import { Text, View } from "../Themed";
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, TouchableHighlight } from "react-native";
+import { useState } from "react";
 
 interface ProductProps {
     product: Product,
-    addedProducts?: Product[],
-    setAddedProducts?: React.Dispatch<React.SetStateAction<Product[]>>,
-    addable?: boolean,
-    removable?: boolean
 
 }
 
-export default function ProductButton({addedProducts, product, setAddedProducts, addable, removable}: ProductProps ) {
+export default function ProductButton({product}: ProductProps ) {
+    const [added, setAdded] = useState<boolean>(product.added);
+
     const handleAdd = () => {
-        if (setAddedProducts != undefined && addedProducts != undefined) {
-            setAddedProducts([...addedProducts, product]);
-        }
+        setAdded(true);
+        product.added = true;
     };
 
     const handleRemove = () => {
-        if (setAddedProducts != undefined && addedProducts != undefined) {
-            setAddedProducts(addedProducts.filter(fil => fil.id !== product.id));
-        }    
+        setAdded(false);
+        product.added = false;
     }
 
-    const addButton = (
-        <Button title="+" onPress={handleAdd}/>
-    )
-
-    const removeButton = (
-        <Button title="-" onPress={handleRemove}/>
-)
+    const handleToggle = () => {
+        if (added) handleRemove()
+        else handleAdd();
+    }
 
     return (
-        <View style={styles.productButton}>
-            <Text style={styles.productButtonText}>{product.name}</Text>
-            {addable ? addButton: null}
-            {removable ? removeButton : null}
-        </View>
+        <TouchableHighlight onPress={handleToggle}>
+            <View style={styles.productButton}>
+                <Text style={styles.productButtonText}>{product.name}</Text>
+                {added ? <Text>Added</Text> : null}
+            </View>
+        </TouchableHighlight>
     )
 }
 

@@ -4,15 +4,19 @@ import { Text, View } from '@/components/Themed';
 
 interface SearchBarProps {
     products: Product[],
-    setProducts: React.Dispatch<React.SetStateAction<Product[]>>
+    setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
+    onEmpty: () => void,
+    onNotEmpty: () => void
+
 }
 
 
-export default function SearchBar({products, setProducts}: SearchBarProps) {
+export default function SearchBar({products, setProducts, onEmpty, onNotEmpty}: SearchBarProps) {
     const handleChange = (newText: string) => {
         if (newText === "") {
-            setProducts([]);
+            onEmpty();
         } else {
+            onNotEmpty();
             const regex = new RegExp(newText, 'i');
             const filteredProducts = products.filter((product) => {
                 return regex.test(product.name);
