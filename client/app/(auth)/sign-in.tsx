@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Button, StyleSheet, TextInput, View } from 'react-native';
-import axiosInstance from '@/services/api';
-import { useAuth } from '@/providers/AuthProvider';
+import React, { useState } from "react";
+import { TouchableOpacity, StyleSheet, TextInput, View, Text } from "react-native";
+import { useAuth } from "@/providers/AuthProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabOneScreen() {
   const { signIn } = useAuth();
 
   const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleEmailChange = (text: string) => {
@@ -22,44 +22,94 @@ export default function TabOneScreen() {
   const handleSubmit = async () => {
     const response = signIn(credentials.email, credentials.password);
     response.then((data: void | { error: string }) => {
-        if (data) {
-            console.log(data.error)
-        }
-    })
+      if (data) {
+        console.log(data.error);
+      }
+    });
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        value={credentials.email}
-        onChangeText={handleEmailChange}
-        placeholder="Email"
-        style={styles.input}
-      />
-      <TextInput
-        value={credentials.password}
-        onChangeText={handlePasswordChange}
-        placeholder="Password"
-        secureTextEntry // for hiding the password
-        style={styles.input}
-      />
-      <Button onPress={handleSubmit} title="SignIn" />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.circle} />
+        <View style={styles.form}>
+        <Text style={styles.title}>LOGIN</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={credentials.email}
+            onChangeText={handleEmailChange}
+            placeholder="Email"
+            style={styles.input}
+          />
+          <TextInput
+            value={credentials.password}
+            onChangeText={handlePasswordChange}
+            placeholder="Password"
+            secureTextEntry // for hiding the password
+            style={styles.input}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}><Text>SIGN IN</Text></TouchableOpacity>
+        </View>
+        </View>
+       
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    overflow: "hidden",
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "center",
+    gap: 50,
+    width: "100%"
+  },
+  title: {
+    fontSize: 32,
+    fontFamily: "JosefineSansBold"
+  },
+  inputContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "center",
+    gap: 10,
+  },
+  button: {
+    backgroundColor: "blue",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  circle: {
+    position: "absolute",
+    top: -300,
+    marginHorizontal: "auto",
+    width: 500,
+    height: 500,
+    borderRadius: 250,
+    backgroundColor: "blue",
+  },
   input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
+    width: "100%",
+    height: 50,
+    borderColor: "gray",
     borderWidth: 1,
+    borderRadius: 15,
     marginBottom: 10,
     paddingHorizontal: 10,
   },
