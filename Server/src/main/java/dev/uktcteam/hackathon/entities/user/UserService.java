@@ -11,8 +11,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<User> getUser(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDto> getUser(Long id) {
+        return userRepository.findById(id)
+                .map(UserDto::new);
     }
 
 }

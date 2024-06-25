@@ -1,10 +1,13 @@
-package dev.uktcteam.hackathon.entities.category;
+package dev.uktcteam.hackathon.entities.checkout;
 
+import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
@@ -13,18 +16,18 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "checkout")
+public class Checkout {
 
     @Id
     @SequenceGenerator(
-            name = "category_sequence",
-            sequenceName = "category_sequence",
+            name = "checkout_sequence",
+            sequenceName = "checkout_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "category_sequence"
+            generator = "checkout_sequence"
     )
     @Column(
             name = "id",
@@ -32,6 +35,6 @@ public class Category {
     )
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCoordinate> itemCoordinates;
 }
