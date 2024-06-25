@@ -7,7 +7,6 @@ interface SearchBarProps {
     setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
     onEmpty: () => void,
     onNotEmpty: () => void
-
 }
 
 
@@ -37,7 +36,6 @@ const styles = StyleSheet.create({
     searchBar: {
         display: "flex",
         flexDirection: "row",
-        width: "100%",
         margin: 3
     },
     searchBarInput: {

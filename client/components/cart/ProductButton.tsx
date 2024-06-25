@@ -5,15 +5,17 @@ import { useState } from "react";
 
 interface ProductProps {
     product: Product,
+    onAdd: () => void
 
 }
 
-export default function ProductButton({product}: ProductProps ) {
+export default function ProductButton({product, onAdd}: ProductProps ) {
     const [added, setAdded] = useState<boolean>(product.added);
 
     const handleAdd = () => {
         setAdded(true);
         product.added = true;
+        onAdd();
     };
 
     const handleRemove = () => {

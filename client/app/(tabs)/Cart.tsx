@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import Product from '@/classes/Product';
 import ProductList from '@/components/cart/ProductList';
 import SearchBar from '@/components/cart/SearchBar';
-import { Button } from 'react-native';
-
+import CalculateRouteButton from "@/components/cart/CalculateRouteButton";
+import { StyleSheet } from 'react-native';
 
 async function readCSV(): Promise<Product[]> {
     const response = await fetch("/resources/product_master_data.csv");
@@ -34,10 +34,6 @@ export default function CartScreen() {
         setCartScreenToggle(false);
     };
 
-    const handleToggle = () => {
-        
-    };
-
     useEffect(() => {
         async function fetchData() {
             setProductData(await readCSV());
@@ -47,20 +43,30 @@ export default function CartScreen() {
 
     const allProductsScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={products.filter(prod => !(prod.added))} />
+            <ProductList products={products.filter(prod => !(prod.added))} onAdd={handleEmpty} />
         </View>
     );
 
     const cartScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={products.filter(prod => prod.added)} />
+            <ProductList products={products.filter(prod => prod.added)} onAdd={handleEmpty} />
         </View>
     );
     
     return (
         <View style={{flex:1}}>
-            <SearchBar products={rawProductData} setProducts={setProducts} onEmpty={handleEmpty} onNotEmpty={handleNotEmpty}/>
+            <View style={styles.topBar}>
+                <SearchBar products={rawProductData} setProducts={setProducts} onEmpty={handleEmpty} onNotEmpty={handleNotEmpty}/>
+                {products.length != 0 ? <CalculateRouteButton products={rawProductData}/> : null}
+            </View>
             {cartScreenToggle ?  cartScreen : allProductsScreen}
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    topBar: {
+        display: "flex",
+        flexDirection: "row"
+    }
+});
