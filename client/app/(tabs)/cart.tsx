@@ -48,7 +48,7 @@ export default function CartScreen() {
 
     const cartScreen = (
         <View style={{flex: 1}}>
-            <ProductList products={addedProducts}/>
+            <ProductList products={addedProducts} removable={true} addedProducts={addedProducts} setAddedProducts={setAddedProducts}/>
         </View>
     );
     

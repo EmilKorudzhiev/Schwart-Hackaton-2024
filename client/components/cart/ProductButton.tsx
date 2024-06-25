@@ -18,15 +18,25 @@ export default function ProductButton({addedProducts, product, setAddedProducts,
         }
     };
 
+    const handleRemove = () => {
+        if (setAddedProducts != undefined && addedProducts != undefined) {
+            setAddedProducts(addedProducts.filter(fil => fil.id !== product.id));
+        }    
+    }
+
     const addButton = (
         <Button title="+" onPress={handleAdd}/>
     )
+
+    const removeButton = (
+        <Button title="-" onPress={handleRemove}/>
+)
 
     return (
         <View style={styles.productButton}>
             <Text style={styles.productButtonText}>{product.name}</Text>
             {addable ? addButton: null}
-            {removable ? <Button title="-"/> : null}
+            {removable ? removeButton : null}
         </View>
     )
 }
