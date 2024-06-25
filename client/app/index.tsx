@@ -4,8 +4,6 @@ import { useAuth } from "../providers/AuthProvider";
 const Index = () => {
   const { user } = useAuth();
 
-  return (<Redirect href="/(tabs)" />);
-
   return user ? (
     <Redirect href="/(tabs)/home" />
   ) : (

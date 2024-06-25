@@ -19,7 +19,7 @@ public class CustomExceptionHandler {
                 .forStatusAndDetail(
                         HttpStatusCode.valueOf(500), e.toString());
 
-        if (e instanceof BadCredentialsException) { 
+        if (e instanceof BadCredentialsException) {
             problemDetail = ProblemDetail
                     .forStatusAndDetail(
                             HttpStatusCode.valueOf(401), "Invalid credentials");

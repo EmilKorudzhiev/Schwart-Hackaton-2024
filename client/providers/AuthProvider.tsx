@@ -5,6 +5,7 @@ import axios, { AxiosError } from 'axios';
 interface AuthContextType {
   user: User | null;
   accessToken: string | null;
+  signUp: (name: string, email: string, password: string) => Promise<void | {error: string}>;
   signIn: (email: string, password: string) => Promise<void | {error: string}>;
   signOut: () => Promise<void>;
   refreshAccessToken: (refreshToken: string) => Promise<string>;
@@ -47,16 +48,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadStorageData();
   }, []);
 
+  const signUp = async (username: string, email: string, password: string) => {
+    try {
+      const response = await axios.post('http://192.168.141.171:8080/api/v1/auth/register', { username, email, password });
+      
+      await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
+      await SecureStore.setItemAsync('accessToken', response.data.access_token);
+      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+
+      setUser(response.data.user);
+      setAccessToken(response.data.access_token);
+      setRefreshToken(response.data.refresh_token);
+    } catch (error) {
+      if(axios.isAxiosError(error)) {
+        return { error: error.response?.data };
+      } else {
+        console.error(error);
+        return { error: "Something else went wrong" };
+      }
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       const response = await axios.post('http://192.168.141.171:8080/api/v1/auth/authenticate', { email, password });
-      const { user, accessToken, refreshToken } = response.data;
-      await SecureStore.setItemAsync('user', JSON.stringify(user));
-      await SecureStore.setItemAsync('accessToken', accessToken);
-      await SecureStore.setItemAsync('refreshToken', refreshToken);
-      setUser(user);
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
+      
+      await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
+      await SecureStore.setItemAsync('accessToken', response.data.access_token);
+      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+
+      setUser(response.data.user);
+      setAccessToken(response.data.access_token);
+      setRefreshToken(response.data.refresh_token);
     } catch (error) {
       if(axios.isAxiosError(error)) {
         if(error.response?.data.detail === "Invalid credentials") {
@@ -65,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return { error: "Something else went wrong" }
         }
       } else {
+        console.error(error)
         return { error: "Something else went wrong" }
       }
     }
@@ -94,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [signOut]);
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, signIn, signOut, refreshAccessToken, loading }}>
+    <AuthContext.Provider value={{ user, accessToken, signUp, signIn, signOut, refreshAccessToken, loading }}>
       {children}
     </AuthContext.Provider>
   );
