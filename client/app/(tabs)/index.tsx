@@ -1,14 +1,18 @@
 import { StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function TabOneScreen() {
+  const {accessToken, refreshAccessToken, user} = useAuth();
+
   return (
+
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" /> */}
+      <Text>{accessToken}</Text>
+      <Text>{user?.email}</Text>
+      <Text>{user?.id}</Text>
+      <Text>{user?.name}</Text>
       <View style={{width: 320, height: 160, position: "relative", borderWidth: 1}}>
         <View style={{width: "100%", height: "100%", borderWidth: 1, position: "absolute"}}/>
         <View style={{width: 320/40, height: 160/20, borderWidth: 1, position: "absolute", left: 4 * (320/40), bottom: 3 * (160 / 20)}}/>
