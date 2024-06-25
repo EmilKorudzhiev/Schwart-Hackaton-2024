@@ -7,13 +7,23 @@ import Product from '@/classes/Product';
 import ProductButton from './ProductButton';
 
 interface ProductListProps {
-    products: Product[]
+    products: Product[],
+    addedProducts?: Product[]
+    setAddedProducts?: React.Dispatch<React.SetStateAction<Product[]>>,
+    addable?: boolean,
+    removable?: boolean
 }
 
-export default function ProductList({products}: {products: Product[]}) {
+export default function ProductList({products, addedProducts, setAddedProducts, addable, removable}: ProductListProps) {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            {products.map((product) => (<ProductButton product={product}/>))}
+            {products.map((product) => (
+                <ProductButton product={product} 
+                setAddedProducts={setAddedProducts} 
+                addable={addable} removable={removable}
+                addedProducts={addedProducts}
+                />
+            ))}
         </ScrollView>
     )
 }

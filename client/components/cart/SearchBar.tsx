@@ -25,7 +25,6 @@ export default function SearchBar({products, setProducts}: SearchBarProps) {
         <View style={styles.searchBar}>
             <Text style={styles.searchBarLabel}>Name</Text>
             <TextInput style={styles.searchBar} onChangeText={handleChange}/>
-            <Button title="Search" />
         </View>
     )
 }
@@ -34,7 +33,8 @@ const styles = StyleSheet.create({
     searchBar: {
         display: "flex",
         flexDirection: "row",
-        width: "100%"
+        width: "100%",
+        margin: 3
     },
     searchBarInput: {
         width: "100%",

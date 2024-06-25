@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Product from '@/classes/Product';
 import ProductList from '@/components/cart/ProductList';
 import SearchBar from '@/components/cart/SearchBar';
+import { Button } from 'react-native';
 
 
 async function readCSV(): Promise<Product[]> {
@@ -23,6 +24,11 @@ async function readCSV(): Promise<Product[]> {
 export default function CartScreen() {
     const [products, setProducts] = useState<Product[]>([]);
     const [rawProductData, setProductData] = useState<Product[]>([]);
+    const [cartScreenToggle, setCartScreenToggle] = useState(false);
+
+    const handleToggle = () => {
+        setCartScreenToggle(!cartScreenToggle);
+    };
 
     useEffect(() => {
         async function fetchData() {
@@ -33,11 +39,23 @@ export default function CartScreen() {
 
     const [addedProducts, setAddedProducts] = useState<Product[]>([]);
 
-    
-    return (
+    const allProductsScreen = (
         <View style={{flex: 1}}>
             <SearchBar products={rawProductData} setProducts={setProducts}/>
-            <ProductList products={products}/>
+            <ProductList products={products} addable={true} addedProducts={addedProducts} setAddedProducts={setAddedProducts}/>
+        </View>
+    );
+
+    const cartScreen = (
+        <View style={{flex: 1}}>
+            <ProductList products={addedProducts}/>
+        </View>
+    );
+    
+    return (
+        <View>
+            <Button title={cartScreenToggle ? "Open All Products" : `Open My Cart (${addedProducts.length})`} onPress={handleToggle}/>
+            {cartScreenToggle ?  cartScreen : allProductsScreen}
         </View>
     )
 }
