@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { TouchableOpacity, StyleSheet, TextInput, View, Text, Button } from "react-native";
+import { TouchableOpacity, StyleSheet, TextInput, View, Text } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
-import IconInputField from "@/components/IconInputField";
-import VisiblityToggle from "@/components/VisibilityToggle";
+import { router } from "expo-router";
 
 export default function TabOneScreen() {
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
 
   const [credentials, setCredentials] = useState({
+    username: "",
     email: "",
     password: "",
   });
+
+  const handleNameChange = (text: string) => {
+    setCredentials({ ...credentials, username: text });
+  };
 
   const handleEmailChange = (text: string) => {
     setCredentials({ ...credentials, email: text });
@@ -24,7 +26,7 @@ export default function TabOneScreen() {
   };
 
   const handleSubmit = async () => {
-    const response = signIn(credentials.email, credentials.password);
+    const response = signUp(credentials.username, credentials.email, credentials.password);
     response.then((data: void | { error: string }) => {
       if (data) {
         console.log(data.error);
@@ -35,8 +37,6 @@ export default function TabOneScreen() {
     });
   };
 
-  const [passwordVisiblity, setPasswordVisibility] = useState(false);
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -44,28 +44,26 @@ export default function TabOneScreen() {
         <View style={styles.form}>
         <Text style={styles.title}>LOGIN</Text>
         <View style={styles.inputContainer}>
-          <IconInputField
+        <TextInput
+            value={credentials.username}
+            onChangeText={handleNameChange}
+            placeholder="Email"
+            style={styles.input}
+          />
+          <TextInput
             value={credentials.email}
             onChangeText={handleEmailChange}
             placeholder="Email"
             style={styles.input}
-            leftSide={<AntDesign name="mail" size={38} color="black" />}
           />
-          <IconInputField
+          <TextInput
             value={credentials.password}
             onChangeText={handlePasswordChange}
             placeholder="Password"
-            secureTextEntry={passwordVisiblity} // for hiding the password
+            secureTextEntry // for hiding the password
             style={styles.input}
-            leftSide={<AntDesign name="lock" size={38} color="black" />}
-            rightSide={
-            <VisiblityToggle 
-            state={passwordVisiblity}
-            setState={setPasswordVisibility}
-            />}
           />
           <TouchableOpacity style={styles.button} onPress={handleSubmit}><Text>SIGN IN</Text></TouchableOpacity>
-          <Link href="(auth)/sign-up">Here</Link>
         </View>
         </View>
        
@@ -96,8 +94,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: "JosefineSansBold",
-    color: "white"
+    fontFamily: "JosefineSansBold"
   },
   inputContainer: {
     width: "100%",
@@ -112,7 +109,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
-    color: "white"
   },
   circle: {
     position: "absolute",
@@ -131,6 +127,5 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 10,
     paddingHorizontal: 10,
-    backgroundColor: "transparent"
   },
 });
