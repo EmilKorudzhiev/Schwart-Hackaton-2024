@@ -1,5 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
+import Icon from './Icon';
 
 interface VisibilityToggleProps<E> {
     state: boolean,
@@ -18,13 +19,13 @@ export default function VisiblityToggle<E>({state, setState}: VisibilityTogglePr
 
     const onButton = (
         <Pressable onPress={turnOff}>
-            <AntDesign name="eyeo" size={48} color="black" />
+            <Icon library="Ionicons" name="eye" size={30} color="black" />
         </Pressable>
     );
 
     const offButton = (
         <Pressable onPress={turnOn}>
-            <AntDesign name="eye" size={48} color="black" />
+            <Icon library="Ionicons" name="eye-off" size={30} color="black" />
         </Pressable>
     );
 
