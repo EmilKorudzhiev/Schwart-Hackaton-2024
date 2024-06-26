@@ -1,12 +1,25 @@
-import React, { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import axios, { AxiosError } from 'axios';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
+import * as SecureStore from "expo-secure-store";
+import axios, { AxiosError } from "axios";
 
 interface AuthContextType {
   user: User | null;
   accessToken: string | null;
-  signUp: (name: string, email: string, password: string) => Promise<void | {error: string}>;
-  signIn: (email: string, password: string) => Promise<void | {error: string}>;
+  signUp: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<void | { error: string }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<void | { error: string }>;
   signOut: () => Promise<void>;
   refreshAccessToken: (refreshToken: string) => Promise<string>;
   loading: boolean;
@@ -14,7 +27,7 @@ interface AuthContextType {
 
 interface User {
   id: string;
-  name: string;
+  username: string;
   email: string;
 }
 
@@ -27,12 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    
     const loadStorageData = async () => {
       try {
-        const storedUser = await SecureStore.getItemAsync('user');
-        const storedAccessToken = await SecureStore.getItemAsync('accessToken');
-        const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
+        const storedUser = await SecureStore.getItemAsync("user");
+        const storedAccessToken = await SecureStore.getItemAsync("accessToken");
+        const storedRefreshToken = await SecureStore.getItemAsync(
+          "refreshToken"
+        );
 
         if (storedUser && storedAccessToken && storedRefreshToken) {
           setUser(JSON.parse(storedUser));
@@ -40,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setRefreshToken(storedRefreshToken);
         }
       } catch (error) {
-        console.error('Failed to load storage data', error);
+        console.error("Failed to load storage data", error);
       } finally {
         setLoading(false);
       }
@@ -51,17 +65,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (username: string, email: string, password: string) => {
     try {
-      const response = await axios.post(`${process.env.HOST}/api/v1/auth/register`, { username, email, password });
-      
-      await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
-      await SecureStore.setItemAsync('accessToken', response.data.access_token);
-      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/register`,
+        { username, email, password }
+      );
+
+      await SecureStore.setItemAsync(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+      await SecureStore.setItemAsync("accessToken", response.data.access_token);
+      await SecureStore.setItemAsync(
+        "refreshToken",
+        response.data.refresh_token
+      );
 
       setUser(response.data.user);
       setAccessToken(response.data.access_token);
       setRefreshToken(response.data.refresh_token);
     } catch (error) {
-      if(axios.isAxiosError(error)) {
+      if (axios.isAxiosError(error)) {
         return { error: error.response?.data };
       } else {
         console.error(error);
@@ -73,26 +96,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       console.log(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`);
-      
-      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`, { email, password });
 
-      await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
-      await SecureStore.setItemAsync('accessToken', response.data.access_token);
-      await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`,
+        { email, password }
+      );
+
+      await SecureStore.setItemAsync(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+      await SecureStore.setItemAsync("accessToken", response.data.access_token);
+      await SecureStore.setItemAsync(
+        "refreshToken",
+        response.data.refresh_token
+      );
 
       setUser(response.data.user);
       setAccessToken(response.data.access_token);
       setRefreshToken(response.data.refresh_token);
     } catch (error) {
-      if(axios.isAxiosError(error)) {
-        if(error.response?.data.detail === "Invalid credentials") {
-          return { error: "Incorrect username or password"}
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.detail === "Invalid credentials") {
+          return { error: "Incorrect username or password" };
         } else {
-          return { error: error.message }
+          return { error: error.message };
         }
       } else {
-        console.error(error)
-        return { error: "Something else went wrong" }
+        console.error(error);
+        return { error: "Something else went wrong" };
       }
     }
   };
@@ -101,27 +133,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setAccessToken(null);
     setRefreshToken(null);
-    await SecureStore.deleteItemAsync('user');
-    await SecureStore.deleteItemAsync('accessToken');
-    await SecureStore.deleteItemAsync('refreshToken');
+    await SecureStore.deleteItemAsync("user");
+    await SecureStore.deleteItemAsync("accessToken");
+    await SecureStore.deleteItemAsync("refreshToken");
   };
 
-  const refreshAccessToken = useCallback(async (refreshToken: string) => {
-    try {
-      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/refresh`, { refreshToken });
-      const { accessToken: newAccessToken } = response.data;
-      await SecureStore.setItemAsync('accessToken', newAccessToken);
-      setAccessToken(newAccessToken);
-      return newAccessToken;
-    } catch (error) {
-      console.error('Failed to refresh access token', error);
-      signOut();
-      throw error;
-    }
-  }, [signOut]);
+  const refreshAccessToken = useCallback(
+    async (refreshToken: string) => {
+      try {
+        const response = await axios.post(
+          `${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/refresh`,
+          { refreshToken }
+        );
+        const { accessToken: newAccessToken } = response.data;
+        await SecureStore.setItemAsync("accessToken", newAccessToken);
+        setAccessToken(newAccessToken);
+        return newAccessToken;
+      } catch (error) {
+        console.error("Failed to refresh access token", error);
+        signOut();
+        throw error;
+      }
+    },
+    [signOut]
+  );
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, signUp, signIn, signOut, refreshAccessToken, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        accessToken,
+        signUp,
+        signIn,
+        signOut,
+        refreshAccessToken,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -130,7 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = (): AuthContextType => {
   const context = React.useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
