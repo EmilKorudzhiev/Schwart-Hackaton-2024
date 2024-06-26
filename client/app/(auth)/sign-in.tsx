@@ -64,8 +64,10 @@ export default function TabOneScreen() {
             setState={setPasswordVisibility}
             />}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}><Text>SIGN IN</Text></TouchableOpacity>
-          <Link href="(auth)/sign-up">Here</Link>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>SIGN IN</Text>
+          </TouchableOpacity>
+          <Link href="(auth)/sign-up" style={styles.link}>No account? Sign up here!</Link>
         </View>
         </View>
        
@@ -133,4 +135,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "transparent"
   },
+  buttonText: {
+    color: "white"
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline"
+  }
 });

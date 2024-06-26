@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, TextInput, View, Text } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
+import VisiblityToggle from "@/components/VisibilityToggle";
+import IconInputField from "@/components/IconInputField";
 
 export default function TabOneScreen() {
   const { signUp } = useAuth();
@@ -37,33 +40,47 @@ export default function TabOneScreen() {
     });
   };
 
+  const [passwordVisiblity, setPasswordVisibility] = useState(false);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.circle} />
         <View style={styles.form}>
-        <Text style={styles.title}>LOGIN</Text>
+        <Text style={styles.title}>SIGN UP</Text>
         <View style={styles.inputContainer}>
-        <TextInput
+        <IconInputField
             value={credentials.username}
             onChangeText={handleNameChange}
-            placeholder="Email"
+            placeholder="Username"
+            leftSide={<AntDesign name="user" size={38} color="black" />}
             style={styles.input}
           />
-          <TextInput
+          <IconInputField
             value={credentials.email}
             onChangeText={handleEmailChange}
             placeholder="Email"
+            leftSide={<AntDesign name="mail" size={38} color="black" />}
             style={styles.input}
           />
-          <TextInput
+          <IconInputField
             value={credentials.password}
             onChangeText={handlePasswordChange}
             placeholder="Password"
-            secureTextEntry // for hiding the password
+            secureTextEntry={passwordVisiblity} // for hiding the password
             style={styles.input}
+            leftSide={<AntDesign name="lock" size={38} color="black" />}
+            rightSide={
+              <VisiblityToggle
+              state={passwordVisiblity}
+              setState={setPasswordVisibility}
+              />
+            }
           />
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}><Text>SIGN IN</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>SIGN UP</Text>
+          </TouchableOpacity>
+          <Link href="(auth)/sign-in" style={styles.link}>Have an account? Log in!</Link>
         </View>
         </View>
        
@@ -94,7 +111,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: "JosefineSansBold"
+    fontFamily: "JosefineSansBold",
+    color: "white"
   },
   inputContainer: {
     width: "100%",
@@ -128,4 +146,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
   },
+  buttonText: {
+    color: "white"
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline"
+  }
 });
