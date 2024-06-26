@@ -1,0 +1,26 @@
+//package dev.uktcteam.hackathon.entities.path;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
+//
+//import java.util.List;
+//
+//@RestController
+//@RequestMapping("/api/path")
+//public class PathController {
+//
+//    private final PathService pathService;
+//
+//    @Autowired
+//    public PathController(PathService pathService) {
+//        this.pathService = pathService;
+//    }
+//
+//    @PostMapping
+//    public PathResponse getOptimalPath(@RequestBody List<Long> productIds) {
+//        return pathService.getOptimalPathResponse(productIds);
+//    }
+//}
