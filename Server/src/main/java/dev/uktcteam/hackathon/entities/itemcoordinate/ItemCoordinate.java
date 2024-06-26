@@ -43,18 +43,18 @@ public class ItemCoordinate {
     private int y;
 
     @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
+    @JoinColumn(name = "store_id", nullable = true)
     private Store store;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "checkout_id", nullable = false)
+    @JoinColumn(name = "checkout_id", nullable = true)
     private Checkout checkout;
 
     @ManyToOne
-    @JoinColumn(name = "traffic_flow_id", nullable = false)
+    @JoinColumn(name = "traffic_flow_id", nullable = true)
     private TrafficFlow trafficFlow;
 }

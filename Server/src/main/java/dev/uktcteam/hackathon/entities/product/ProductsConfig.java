@@ -5,7 +5,9 @@ import dev.uktcteam.hackathon.entities.category.CategoryRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Order(1)
 public class ProductsConfig implements CommandLineRunner {
 
     @Autowired
