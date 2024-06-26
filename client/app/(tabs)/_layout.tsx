@@ -27,6 +27,7 @@ export default function TabLayout() {
           name="index"
           options={{
             title: "Home",
+            headerShown: false,
             tabBarIcon: ({ color }) => (
               <Icon library="Entypo" name="home" color={color} />
             ),
