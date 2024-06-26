@@ -1,5 +1,6 @@
 package dev.uktcteam.hackathon.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,6 +35,15 @@ public class CustomExceptionHandler {
                             HttpStatusCode.valueOf(403), e.getMessage());
             problemDetail.setProperty(
                     "access_denied", "Not authorized"
+            );
+        }
+
+        if (e instanceof ExpiredJwtException){
+            problemDetail = ProblemDetail
+                    .forStatusAndDetail(
+                            HttpStatusCode.valueOf(401), "Token expired");
+            problemDetail.setProperty(
+                    "access_denied", "Token expired"
             );
         }
 
