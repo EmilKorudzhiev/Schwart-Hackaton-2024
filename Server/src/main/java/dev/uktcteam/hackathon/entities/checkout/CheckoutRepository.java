@@ -1,4 +1,4 @@
-package dev.uktcteam.hackathon.entities.checkouts;
+package dev.uktcteam.hackathon.entities.checkout;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,14 +1,20 @@
 import { Redirect } from "expo-router";
 import { useAuth } from "../providers/AuthProvider";
+import { Text } from "react-native";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  return user ? (
-    <Redirect href="/(tabs)/home" />
-  ) : (
-    <Redirect href="/(auth)/sign-in" />
-  );
+  if(!loading) {
+    return user ? (
+      <Redirect href="(tabs)" />
+    ) : (
+      <Redirect href="/(auth)/sign-in" />
+    );
+  } else {
+    return <Text>Loading</Text>
+  }
+
 };
 
 export default Index;

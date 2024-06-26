@@ -1,12 +1,14 @@
-package dev.uktcteam.hackathon.entities.products;
+package dev.uktcteam.hackathon.entities.product;
 
 import dev.uktcteam.hackathon.entities.category.Category;
-import dev.uktcteam.hackathon.entities.coordinates.Coordinate;
+import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Data
@@ -24,7 +26,7 @@ public class Product {
 
     @Id
     @Column(name = "product_id", nullable = false)
-    private String productId;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -36,21 +38,13 @@ public class Product {
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coordinate_id", nullable = false)
-    private Coordinate coordinate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Column(name = "is_golden", nullable = false)
     private Boolean isGolden;
 
-    public String getId() {
-        return this.productId;
-    }
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCoordinate> itemCoordinates;
 
-    public boolean isGolden() {
-        return this.isGolden;
-    }
 }

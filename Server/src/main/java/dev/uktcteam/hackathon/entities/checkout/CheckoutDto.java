@@ -1,4 +1,4 @@
-package dev.uktcteam.hackathon.entities.checkouts;
+package dev.uktcteam.hackathon.entities.checkout;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
