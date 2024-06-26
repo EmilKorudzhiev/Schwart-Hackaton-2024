@@ -1,6 +1,6 @@
 import React from "react";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { Link, Redirect, Tabs } from "expo-router";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { Link, Redirect, Stack, Tabs } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -11,60 +11,25 @@ import { useAuth } from "@/providers/AuthProvider";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { user, loading } = useAuth();
-
+  //const { user, loading } = useAuth();
+  const loading = false;
+  const user = true;
+  
+  const headerProfileButton = () => {
+    return (
+      <Link href="profile" style={{marginRight: 20}}>
+        <FontAwesome name="user" size={24} color="black" />
+      </Link>
+    )
+  };
+  
   if (!loading) {
     return user ? (
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-          tabBarStyle: styles.tabBar,
-          tabBarLabelStyle: styles.tabBarLabel,
-          headerShown: useClientOnlyValue(false, true),
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Home",
-            headerShown: false,
-            tabBarIcon: ({ color }) => (
-              <Icon library="Entypo" name="home" color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="two"
-          options={{
-            title: "Findr",
-            tabBarIcon: ({ color }) => (
-              <Icon
-                library="MaterialCommunityIcons"
-                name="map-marker-path"
-                color={color}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="cart"
-          options={{
-            title: "My Cart",
-            tabBarIcon: ({ color }) => (
-              <Icon library="FontAwesome5" name="shopping-cart" color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            tabBarIcon: ({ color }) => (
-              <Icon library="FontAwesome" name="user" color={color} />
-            ),
-          }}
-        />
-      </Tabs>
+      <Stack>
+        <Stack.Screen name="Map" options={{title: "Map", headerRight:headerProfileButton }}/>
+        <Stack.Screen name="Cart" options={{title: "Cart", headerBackVisible: false}}/>
+        <Stack.Screen name="profile" options={{title: "Profile"}}/>
+      </Stack>
     ) : (
       <Redirect href="/(auth)/sign-in" />
     );
