@@ -22,6 +22,7 @@ export default function IconInputField({value, onChangeText, placeholder, style,
             placeholder={placeholder}
             style={style}
             secureTextEntry={secureTextEntry}
+            placeholderTextColor={"#d1d1cf"}
             />
             {rightSide}
         </View>

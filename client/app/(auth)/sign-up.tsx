@@ -15,6 +15,7 @@ export default function TabOneScreen() {
     email: "",
     password: "",
   });
+  const [passwordVisiblity, setPasswordVisibility] = useState(true);
 
   const handleNameChange = (text: string) => {
     setCredentials({ ...credentials, username: text });
@@ -40,7 +41,99 @@ export default function TabOneScreen() {
     });
   };
 
-  const [passwordVisiblity, setPasswordVisibility] = useState(false);
+  const usernameField = (
+    <IconInputField key={"username"}
+      value={credentials.username}
+      onChangeText={handleNameChange}
+      placeholder="Username"
+      leftSide={<AntDesign name="user" size={38} color="black" />}
+      style={styles.input}
+    />
+  );
+
+  const emailField = (
+    <IconInputField key={"email"}
+      value={credentials.email}
+      onChangeText={handleEmailChange}
+      placeholder="Email"
+      leftSide={<AntDesign name="mail" size={38} color="black" />}
+      style={styles.input}
+    />
+  );
+
+  const passwordField = (
+    <IconInputField key={"password"}
+    value={credentials.password}
+    onChangeText={handlePasswordChange}
+    placeholder="Password"
+    secureTextEntry={passwordVisiblity} // for hiding the password
+    style={styles.input}
+    leftSide={<AntDesign name="lock" size={38} color="black" />}
+    rightSide={
+      <VisiblityToggle
+      state={passwordVisiblity}
+      setState={setPasswordVisibility}/>
+    }
+    />
+  );
+  const fields = [emailField, usernameField, passwordField];
+  const [activeFieldKey, setFieldKey] = useState<string>(emailField.key ? emailField.key : "");
+
+  const setActiveFieldToNext = () => {
+    switch (activeFieldKey) {
+      case "email":
+        setFieldKey("username");
+        break;
+      case "username":
+        setFieldKey("password");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const setActiveFieldToPrevious = () => {
+    switch (activeFieldKey) {
+      case "password":
+        setFieldKey("username");
+        break;
+      case "username":
+        setFieldKey("email");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const getActiveField = () => {
+    return fields.filter(field => field.key === activeFieldKey)
+  };
+
+  const signUpButton = (
+    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+      <Text style={styles.buttonText}>SIGN UP</Text>
+    </TouchableOpacity>	
+  );
+
+  const nextStepButton = (
+    <TouchableOpacity onPress={setActiveFieldToNext}>
+      <AntDesign name="right" size={38} color="black" />
+    </TouchableOpacity>	
+  );
+
+  const previousStepButton = (
+    <TouchableOpacity onPress={setActiveFieldToPrevious}>
+      <AntDesign name="left" size={38} color="black" />
+    </TouchableOpacity>	
+  );
+
+  const stepButtons = (
+    <View style={styles.buttonContainer}>
+      {activeFieldKey !== "email" ? previousStepButton : null}
+      {activeFieldKey !== "password" ? nextStepButton : null}
+      {activeFieldKey === "password" ? signUpButton : null}
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -49,37 +142,8 @@ export default function TabOneScreen() {
         <View style={styles.form}>
         <Text style={styles.title}>SIGN UP</Text>
         <View style={styles.inputContainer}>
-        <IconInputField
-            value={credentials.username}
-            onChangeText={handleNameChange}
-            placeholder="Username"
-            leftSide={<AntDesign name="user" size={38} color="black" />}
-            style={styles.input}
-          />
-          <IconInputField
-            value={credentials.email}
-            onChangeText={handleEmailChange}
-            placeholder="Email"
-            leftSide={<AntDesign name="mail" size={38} color="black" />}
-            style={styles.input}
-          />
-          <IconInputField
-            value={credentials.password}
-            onChangeText={handlePasswordChange}
-            placeholder="Password"
-            secureTextEntry={passwordVisiblity} // for hiding the password
-            style={styles.input}
-            leftSide={<AntDesign name="lock" size={38} color="black" />}
-            rightSide={
-              <VisiblityToggle
-              state={passwordVisiblity}
-              setState={setPasswordVisibility}
-              />
-            }
-          />
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>SIGN UP</Text>
-          </TouchableOpacity>
+          {getActiveField()}
+          {stepButtons}
           <Link href="(auth)/sign-in" style={styles.link}>Have an account? Log in!</Link>
         </View>
         </View>
@@ -152,5 +216,9 @@ const styles = StyleSheet.create({
   link: {
     color: "blue",
     textDecorationLine: "underline"
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row"
   }
 });
