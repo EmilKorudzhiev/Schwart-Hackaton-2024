@@ -72,7 +72,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await axios.post(`${process.env.HOST}/api/v1/auth/authenticate`, { email, password });
+      console.log(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`);
+      
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`, { email, password });
 
       await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
       await SecureStore.setItemAsync('accessToken', response.data.access_token);
@@ -86,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if(error.response?.data.detail === "Invalid credentials") {
           return { error: "Incorrect username or password"}
         } else {
-          return { error: "Something else went wrong" }
+          return { error: error.message }
         }
       } else {
         console.error(error)
@@ -106,7 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshAccessToken = useCallback(async (refreshToken: string) => {
     try {
-      const response = await axios.post(`${process.env.HOST}/api/v1/auth/refresh`, { refreshToken });
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/refresh`, { refreshToken });
       const { accessToken: newAccessToken } = response.data;
       await SecureStore.setItemAsync('accessToken', newAccessToken);
       setAccessToken(newAccessToken);

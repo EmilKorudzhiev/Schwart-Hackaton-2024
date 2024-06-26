@@ -79,7 +79,7 @@ export default function ZoomableMap() {
 
   const drawCols = () => {
     let cols = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 40; i++) {
       cols.push(
         <View
           key={`col-${i}`}
@@ -96,7 +96,7 @@ export default function ZoomableMap() {
 
   const drawRows = () => {
     let rows = [];
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 20; i++) {
       rows.push(
         <View key={`row-${i}`} style={{ flexDirection: "row" }}>
           {drawCols()}

@@ -88,7 +88,7 @@ export default function TabOneScreen() {
               }
             />
             <View style={styles.actionContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <TouchableOpacity style={{...styles.button, marginTop: 20}} onPress={handleSubmit}>
               <Text style={styles.buttonText}>SIGN IN</Text>
             </TouchableOpacity>
             <View style={styles.separatorContainer}>
@@ -96,11 +96,12 @@ export default function TabOneScreen() {
               <Text style={styles.separatorText}>OR</Text>
               <View style={styles.separator} />
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
-            </TouchableOpacity>
+            <Link asChild href="(auth)/sign-up">
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
+              </TouchableOpacity>
+            </Link>
             </View>
-            
           </View>
         </View>
       </View>
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#009fb7",
-    marginTop: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
@@ -151,9 +151,9 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     flexDirection: "column",
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
-    gap: 10,
+    gap: 15,
   },
   circle: {
     position: "absolute",
