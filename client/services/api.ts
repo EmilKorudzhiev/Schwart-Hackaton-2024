@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '../providers/AuthProvider';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://192.168.141.171:8080/api/v1/',
+    baseURL: `${process.env.HOST}/api/v1/`,
 });
   
   
