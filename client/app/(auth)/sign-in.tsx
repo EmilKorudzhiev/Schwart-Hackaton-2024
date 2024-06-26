@@ -67,7 +67,7 @@ export default function TabOneScreen() {
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>SIGN IN</Text>
           </TouchableOpacity>
-          <Link href="(auth)/sign-up">No account? Sign up here!</Link>
+          <Link href="(auth)/sign-up" style={styles.link}>No account? Sign up here!</Link>
         </View>
         </View>
        
@@ -137,5 +137,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white"
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline"
   }
 });

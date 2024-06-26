@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, TextInput, View, Text } from "react-native";
 import { useAuth } from "@/providers/AuthProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import VisiblityToggle from "@/components/VisibilityToggle";
 import IconInputField from "@/components/IconInputField";
@@ -80,6 +80,7 @@ export default function TabOneScreen() {
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>SIGN UP</Text>
           </TouchableOpacity>
+          <Link href="(auth)/sign-in" style={styles.link}>Have an account? Log in!</Link>
         </View>
         </View>
        
@@ -147,5 +148,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white"
+  },
+  link: {
+    color: "blue",
+    textDecorationLine: "underline"
   }
 });
