@@ -20,19 +20,21 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 public class TrafficFlow {
     @Id
     @SequenceGenerator(
-            name = "checkout_sequence",
-            sequenceName = "checkout_sequence",
+            name = "traffic_flow_sequence",
+            sequenceName = "traffic_flow_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "checkout_sequence"
+            generator = "traffic_flow_sequence"
     )
     @Column(
             name = "id",
             updatable = false
     )
-    private String id;
+    private Long id;
+
+    private String name;
 
     @OneToMany(mappedBy = "trafficFlow", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCoordinate> itemCoordinates;

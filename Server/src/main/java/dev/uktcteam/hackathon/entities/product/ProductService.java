@@ -1,89 +1,44 @@
-//package dev.uktcteam.hackathon.entities.product;
-//
-//import dev.uktcteam.hackathon.entities.category.Category;
-//import dev.uktcteam.hackathon.entities.category.CategoryRepository;
-//import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinate;
-//import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinateRepository;
-//import jakarta.persistence.EntityNotFoundException;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//public class ProductService {
-//
-//    @Autowired
-//    private ProductRepository productRepository;
-//
-//    @Autowired
-//    private ItemCoordinateRepository itemCoordinateRepository;
-//
-//    @Autowired
-//    private CategoryRepository categoryRepository;
-//
-//    public ProductDto createProduct(ProductDto productDto) {
-//        ItemCoordinate itemCoordinate = itemCoordinateRepository.findById(productDto.getCoordinateId())
-//                .orElseThrow(() -> new RuntimeException("ItemCoordinate not found"));
-//         Category category = categoryRepository.findById(productDto.getCategoryId())
-//                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + productDto.getCategoryId()));
-//
-//        Product product = Product.builder()
-//                .id(productDto.getProductId())
-//                .name(productDto.getName())
-//                .price(productDto.getPrice())
-//                .image(productDto.getImage())
-//                .itemCoordinate(itemCoordinate)
-//                .category(category)
-//                .isGolden(productDto.isGolden())
-//                .build();
-//
-//        Product savedProduct = productRepository.save(product);
-//        productDto.setProductId(savedProduct.getProductId());
-//        return productDto;
-//    }
-//    public ProductDto getProductById(Long productId) {
-//    Product product = productRepository.findById(productId)
-//            .orElseThrow(() -> new RuntimeException("Product not found"));
-//    return convertToDto(product);
-//}
-//private ProductDto convertToDto(Product product) {
-//        return ProductDto.builder()
-//                .productId(product.getProductId())
-//                .name(product.getName())
-//                .price(product.getPrice())
-//                .image(product.getImage())
-//                .coordinateId(product.getItemCoordinate().getId())
-//                .categoryId(product.getCategory().getId())
-//                .isGolden(product.isGolden())
-//                .build();
-//    }
-//    public Product updateProduct(Long productId, ProductDto productDto) {
-//        Optional<Product> optionalProduct = productRepository.findById(productId);
-//        if (optionalProduct.isEmpty()) {
-//            throw new RuntimeException("Product not found");
-//        }
-//
-//        ItemCoordinate itemCoordinate = itemCoordinateRepository.findById(productDto.getCoordinateId())
-//                .orElseThrow(() -> new RuntimeException("ItemCoordinate not found"));
-//        Category category = categoryRepository.findById(productDto.getCategoryId())
-//                .orElseThrow(() -> new RuntimeException("Category not found"));
-//
-//        Product productToUpdate = optionalProduct.get();
-//        productToUpdate.setName(productDto.getName());
-//        productToUpdate.setPrice(productDto.getPrice());
-//        productToUpdate.setImage(productDto.getImage());
-//        productToUpdate.setItemCoordinate(itemCoordinate);
-//        productToUpdate.setCategory(category);
-//        productToUpdate.setIsGolden(productDto.isGolden());
-//
-//        return productRepository.save(productToUpdate);
-//    }
-//    public void deleteProduct(Long id) {
-//        productRepository.deleteById(id);
-//    }
-//    public List<Product> getAllProducts() {
-//    return productRepository.findAll();
-//}
-//}
+package dev.uktcteam.hackathon.entities.product;
+
+import dev.uktcteam.hackathon.entities.category.Category;
+import dev.uktcteam.hackathon.entities.category.CategoryRepository;
+import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinate;
+import dev.uktcteam.hackathon.entities.itemcoordinate.ItemCoordinateRepository;
+import dev.uktcteam.hackathon.entities.product.request.CreateProductRequest;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class ProductService {
+
+    private final ProductRepository productRepository;
+    private final ItemCoordinateRepository itemCoordinateRepository;
+    private final CategoryRepository categoryRepository;
+
+    public ProductDto createProduct(CreateProductRequest createProductRequest) {
+        Category category = categoryRepository.findById(createProductRequest.getCategoryId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Category not found. Please provide a valid category id."
+                        ));
+
+        Product product = Product.builder()
+                .name(createProductRequest.getName())
+                .price(createProductRequest.getPrice())
+                .image(createProductRequest.getImage())
+                .category(category)
+                .isGolden(createProductRequest.getIsGolden())
+                .build();
+
+        product = productRepository.save(product);
+
+        return new ProductDto(product);
+    }
+
+}

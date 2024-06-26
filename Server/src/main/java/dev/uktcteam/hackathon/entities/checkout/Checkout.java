@@ -35,6 +35,8 @@ public class Checkout {
     )
     private Long id;
 
+    private String name;
+
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCoordinate> itemCoordinates;
 }
