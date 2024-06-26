@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "@/components/Icon";
+import axiosInstance from "@/services/api";
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -30,6 +31,21 @@ export default function ZoomableMap() {
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
   const sensitivityFactor = useSharedValue(1);
+
+  const [mapObjects, setMapObjects] = useState();
+
+  useEffect(() => {
+    const getMapObjects = async () => {
+      try {
+        const response = await axiosInstance.get('/store/1'); // No need to add the base URL again
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching map objects:', error);
+      }
+    };
+
+    getMapObjects();
+  }, [])
 
   const panGesture = Gesture.Pan()
     .onBegin((event) => {
