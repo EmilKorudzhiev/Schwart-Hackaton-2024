@@ -4,14 +4,15 @@ import ProductButton from './ProductButton';
 
 interface ProductListProps {
     products: Product[],
-    onAdd: () => void
+    productData: Product[]
+    setProductData: React.Dispatch<React.SetStateAction<Product[]>>,
 }
 
-export default function ProductList({products, onAdd}: ProductListProps) {
+export default function ProductList({products,productData, setProductData}: ProductListProps) {
     return (
         <ScrollView style={{flex: 1}}>
             {products.map((product) => (
-                <ProductButton product={product} onAdd={onAdd}/>
+                <ProductButton product={product} productData={productData} setProductData={setProductData}/>
             ))}
         </ScrollView>
     )

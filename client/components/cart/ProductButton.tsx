@@ -5,34 +5,31 @@ import { useState } from "react";
 
 interface ProductProps {
     product: Product,
-    onAdd: () => void
-
+    productData: Product[],
+    setProductData: React.Dispatch<React.SetStateAction<Product[]>>
 }
 
-export default function ProductButton({product, onAdd}: ProductProps ) {
-    const [added, setAdded] = useState<boolean>(product.added);
+export default function ProductButton({product,productData,setProductData}: ProductProps ) {
+    const handlePress = () => {
+        if (product.added) {
+            const mappedProducts: Product[] = productData.map(curProduct => {
+                return curProduct.id === product.id ? { ...curProduct, added: false} : curProduct
+            });
+            setProductData(mappedProducts);
+        } else {
+            const mappedProducts: Product[] = productData.map(curProduct => {
+                return curProduct.id === product.id ? { ...curProduct, added: true} : curProduct
+            });
+            setProductData(mappedProducts);
 
-    const handleAdd = () => {
-        setAdded(true);
-        product.added = true;
-        onAdd();
+        }
     };
 
-    const handleRemove = () => {
-        setAdded(false);
-        product.added = false;
-    }
-
-    const handleToggle = () => {
-        if (added) handleRemove()
-        else handleAdd();
-    }
-
     return (
-        <TouchableHighlight onPress={handleToggle}>
+        <TouchableHighlight onPress={handlePress} key={product.id}>
             <View style={styles.productButton}>
                 <Text style={styles.productButtonText}>{product.name}</Text>
-                {added ? <Text>Added</Text> : null}
+                {product.added ? <Text>Added</Text> : null}
             </View>
         </TouchableHighlight>
     )
