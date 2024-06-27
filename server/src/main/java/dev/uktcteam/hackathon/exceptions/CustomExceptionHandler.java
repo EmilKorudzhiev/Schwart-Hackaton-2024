@@ -47,6 +47,8 @@ public class CustomExceptionHandler {
             );
         }
 
+        e.printStackTrace();
+
         return problemDetail;
     }
 

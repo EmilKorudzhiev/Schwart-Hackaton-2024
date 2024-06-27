@@ -80,9 +80,23 @@ public class ProductsConfig implements CommandLineRunner {
             categoryRepository.save(category);
         }
 
+        // Convert the goldenEggs array to a list of Longs
+        String[] goldenEggs = {"P107", "P310", "P204", "P19", "P279"};
+        List<Long> goldenEggIds = new ArrayList<>();
+        for (String egg : goldenEggs) {
+            goldenEggIds.add(Long.parseLong(egg.substring(1)));
+        }
+
         for (Product product : products) {
             Category category = categoryRepository.findByName(product.getCategory().getName());
             product.setCategory(category);
+
+            // If the product ID is in the goldenEggIds list, set isGolden to true
+            if (goldenEggIds.contains(product.getId())) {
+                product.setIsGolden(true);
+            }
+
+            // Save the product to the database
             productRepository.save(product);
         }
     }

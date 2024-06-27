@@ -4,6 +4,7 @@ import dev.uktcteam.hackathon.pathfinding.logic.CoordinateMatrix;
 import dev.uktcteam.hackathon.pathfinding.logic.HashMapUtils;
 import dev.uktcteam.hackathon.pathfinding.logic.Pair;
 import dev.uktcteam.hackathon.pathfinding.logic.RouteOptimizer;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +21,29 @@ public class PathfindingService {
     @Autowired
     private CoordinateMatrix coordinateMatrix;
 
-    public PathfindDto findPath(String[] products) {
+    private HashMap<Pair, Integer> shortestDistances;
+    private HashMap<Pair, Integer> productToCheckoutDistances;
+    private HashMap<String, Integer> entranceToProductsDistances;
+    private HashMap<String, Integer> exitToCheckoutsDistances;
 
-        HashMap<Pair, Integer> shortestDistances = HashMapUtils
+
+    @PostConstruct
+    public void init() {
+        shortestDistances = HashMapUtils
                 .extractDistancePairHashMapFromFile("src/main/resources/algorithm-caches/shortestDistances.json");
 
-        HashMap<Pair, Integer> productToCheckoutDistances = HashMapUtils
+        productToCheckoutDistances = HashMapUtils
                 .extractDistancePairHashMapFromFile("src/main/resources/algorithm-caches/productToCheckoutDistances.json");
 
-        HashMap<String, Integer> entranceToProductsDistances = HashMapUtils
+        entranceToProductsDistances = HashMapUtils
                 .extractDistanceHashMapFromFile("src/main/resources/algorithm-caches/entranceToProductsDistances.json");
 
-        HashMap<String, Integer> exitToCheckoutsDistances = HashMapUtils
+        exitToCheckoutsDistances = HashMapUtils
                 .extractDistanceHashMapFromFile("src/main/resources/algorithm-caches/exitToCheckoutsDistances.json");
+    }
+
+    public PathfindDto findPath(String[] products) {
+
 
         String entrance = "EN";
 
@@ -42,9 +53,21 @@ public class PathfindingService {
 
         String exit = "EX";
 
+
         // Find the shortest route using the nearest neighbor algorithm
         ArrayList<String> shortestRoute = routeOptimizer.findShortestRoute(entrance, exit, products, checkouts,
                 shortestDistances, productToCheckoutDistances, entranceToProductsDistances, exitToCheckoutsDistances);
+
+        // Insert the best golden egg that increases the route distance minimally
+        shortestRoute = routeOptimizer.insertBestGoldenEgg(shortestRoute, goldenEggs, shortestDistances);
+
+        // Optimize the route using 2-opt algorithm
+        shortestRoute = routeOptimizer.twoOpt(shortestRoute, shortestDistances, productToCheckoutDistances,
+                entranceToProductsDistances, exitToCheckoutsDistances);
+
+        // Calculate the total distance of the optimized route
+        int totalDistance = routeOptimizer.calculateRouteDistance(shortestRoute, shortestDistances, productToCheckoutDistances,
+                entranceToProductsDistances, exitToCheckoutsDistances);
 
         // Get the shortest route path
         ArrayList<List<int[]>> shortestRoutePath = routeOptimizer.getShortestRoutePath(coordinateMatrix.extractMatrix(), shortestRoute);
@@ -83,8 +106,10 @@ public class PathfindingService {
         }
 
         // Create a PathfindDto object and set the pathfind field
-        PathfindDto pathfindDto = new PathfindDto();
-        pathfindDto.setPathfind(pathfind);
+        PathfindDto pathfindDto = PathfindDto.builder()
+                .distance(totalDistance)
+                .pathfind(pathfind)
+                .build();
 
         return pathfindDto;
     }
