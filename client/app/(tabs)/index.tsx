@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import Svg, { Circle, Rect } from "react-native-svg";
 import {
   GestureHandlerRootView,
   GestureDetector,
@@ -19,7 +18,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "@/components/Icon";
-import axiosInstance from "@/services/api";
+import { useAxios } from "@/services/api";
+import { useAuth } from "@/providers/AuthProvider";
+import axios from "axios";
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -32,19 +33,36 @@ export default function ZoomableMap() {
   const savedTranslateY = useSharedValue(0);
   const sensitivityFactor = useSharedValue(1);
 
-  const [mapObjects, setMapObjects] = useState();
+  interface MapObject {
+    itemDetails: any[][];
+    address: string;
+    description: string;
+    id: number;
+    // Add other properties if needed
+  }
+  
+  const [mapObjects, setMapObjects] = useState<MapObject | undefined>();
+
+  const {refreshAccessToken, signOut} = useAuth();
+
+  const axiosInstance = useAxios(refreshAccessToken, signOut);
 
   useEffect(() => {
-    const getMapObjects = async () => {
+
+    const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/store/1'); // No need to add the base URL again
-        console.log(response.data);
+        const response = axiosInstance.get("store/1");
+        setMapObjects((await response).data);
+        
+        
       } catch (error) {
-        console.error('Error fetching map objects:', error);
+        if(axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data);
+        }
       }
     };
 
-    getMapObjects();
+    fetchData();
   }, [])
 
   const panGesture = Gesture.Pan()
@@ -93,16 +111,17 @@ export default function ZoomableMap() {
     };
   });
 
-  const drawCols = () => {
+  const drawCols = (y: number) => {
     let cols = [];
-    for (let i = 0; i < 40; i++) {
+    for (let x = 0; x < 40; x++) {
       cols.push(
         <View
-          key={`col-${i}`}
+          key={`col-${x}`}
           style={{
             width: screenWidth / 40,
             height: screenWidth / 40,
             borderWidth: 0.5,
+            borderColor: "rgba(0, 0, 0, 0.1)"
           }}
         />
       );
@@ -112,10 +131,10 @@ export default function ZoomableMap() {
 
   const drawRows = () => {
     let rows = [];
-    for (let i = 0; i < 20; i++) {
+    for (let y = 0; y < 20; y++) {
       rows.push(
-        <View key={`row-${i}`} style={{ flexDirection: "row" }}>
-          {drawCols()}
+        <View key={`row-${y}`} style={{ flexDirection: "row" }}>
+          {drawCols(y)}
         </View>
       );
     }
@@ -125,35 +144,33 @@ export default function ZoomableMap() {
   const drawRedSquares = () => {
     let squares: React.JSX.Element[] = [];
 
-    const positions = [
-      { row: 1, col: 1 },
-      { row: 2, col: 1 },
-      { row: 3, col: 1 },
-      { row: 3, col: 2 },
-      { row: 3, col: 3 },
-      { row: 3, col: 4 },
-      { row: 3, col: 5 },
-    ];
-
-
-    positions.forEach((pos, index) => {
-      squares.push(
-        <View
-          key={`red-square-${index}`}
-          style={{
-            width: screenWidth / 40,
-            height: screenWidth / 40,
-            backgroundColor: "red",
-            position: "absolute",
-            bottom: pos.row * (screenWidth / 40) - screenWidth / 80,
-            left: pos.col * (screenWidth / 40) - screenWidth / 80,
-          }}
-        />
-      );
-    });
+    for(let y = 0; y < 21; y++) {
+      for(let x = 0; x < 41; x++) {
+        const isNotNull = mapObjects && mapObjects.itemDetails && mapObjects.itemDetails[x][y] !== null;
+        if(isNotNull) {
+          squares.push(
+            <View
+              key={`red-square-${x}-${y}`}
+              style={{
+                width: screenWidth / 40,
+                height: screenWidth / 40,
+                backgroundColor: mapObjects.itemDetails[x][y].category === "Риба" ? "aqua" : "red",
+                position: "absolute",
+                bottom: y * (screenWidth / 40) - screenWidth / 80,
+                left: x * (screenWidth / 40) - screenWidth / 80,
+                borderRadius: 1,
+                borderWidth: 0.5,
+              }}
+            />
+          );
+        }
+        
+      }
+    }
 
     return squares;
   };
+
   const drawPath = () => {
     let lines: React.JSX.Element[] = [];
 
@@ -192,10 +209,10 @@ export default function ZoomableMap() {
         >
           <View style={[styles.upperHalf, { height: screenWidth }]}>
             <Animated.View style={[styles.content, animatedStyle]}>
-              <View style={{ ...styles.innerView, borderWidth: 1 }}>
+              <View style={{ ...styles.innerView}}>
                 {drawRows()}
-                {drawRedSquares()}
                 {drawPath()}
+                {mapObjects && mapObjects.itemDetails && drawRedSquares()}
               </View>
             </Animated.View>
             <TouchableOpacity style={styles.recenter} onPress={handleRecenter}>
@@ -242,6 +259,7 @@ const styles = StyleSheet.create({
   },
   innerView: {
     position: "relative",
+    borderColor: "rgba(0, 0, 0, 0.1)"
   },
   recenter: {
     position: "absolute",
