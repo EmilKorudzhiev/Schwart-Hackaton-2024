@@ -26,8 +26,8 @@ export default function TabLayout() {
   if (!loading) {
     return user ? (
       <Stack>
-        <Stack.Screen name="Map" options={{title: "Map", headerRight:headerProfileButton }}/>
         <Stack.Screen name="products" options={{title: "All Products", headerRight:headerProfileButton}}/>
+        <Stack.Screen name="Map" options={{title: "Map", headerRight:headerProfileButton }}/>
         <Stack.Screen name="Cart" options={{title: "Cart", headerRight:headerProfileButton}}/>
         <Stack.Screen name="profile" options={{title: "Profile"}}/>
       </Stack>
