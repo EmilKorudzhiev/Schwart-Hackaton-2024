@@ -4,16 +4,22 @@ import ProductButton from './ProductButton';
 
 interface ProductListProps {
     products: Product[],
-    onAdd: () => void
+    onAdd: (product: Product) => void
 }
 
-export default function ProductList({products, onAdd}: ProductListProps) {
+const ProductList: React.FC<ProductListProps> = ({ products, onAdd }) => {
     return (
-        <ScrollView style={{flex: 1}}>
+        <ScrollView style={{ flex: 1 }}>
             {products.map((product) => (
-                <ProductButton product={product} onAdd={onAdd}/>
+                <ProductButton
+                    key={product.id}
+                    product={product}
+                    onAdd={() => onAdd(product)}
+                />
             ))}
         </ScrollView>
-    )
-}
+    );
+};
+
+export default ProductList;
 
