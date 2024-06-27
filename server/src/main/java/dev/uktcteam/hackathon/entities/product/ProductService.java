@@ -42,9 +42,11 @@ public class ProductService {
 
         return new ProductDto(product);
     }
-     public Map<String, List<ProductDto>> getAllProductsGroupedByCategories() {
+
+    public Map<String, List<ProductDto>> getAllProductsGroupedByCategories() {
         List<Product> products = productRepository.findAll();
         Map<String, List<ProductDto>> groupedProducts = products.stream()
+                .filter(product -> !product.getIsGolden())
                 .collect(Collectors.groupingBy(
                         product -> product.getCategory().getName(),
                         Collectors.mapping(ProductDto::new, Collectors.toList())

@@ -12,12 +12,12 @@ import java.util.HashMap;
 @Service
 public class HashMapUtils {
 
-    public static void saveHashMapToFile(HashMap<?, ?> map, String filename) {
+    public void saveHashMapToFile(HashMap<?, ?> map, String filename) {
         JSONObject json = new JSONObject(map);
         saveToFile(filename, json.toString()); // 4 is the number of spaces to indent
     }
 
-    public static HashMap<String, Integer> extractDistanceHashMapFromFile(String filename) {
+    public HashMap<String, Integer> extractDistanceHashMapFromFile(String filename) {
         HashMap<String, Integer> map = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             StringBuilder sb = new StringBuilder();
@@ -35,7 +35,7 @@ public class HashMapUtils {
         return map;
     }
 
-    public static HashMap<Pair, Integer> extractDistancePairHashMapFromFile(String filename) {
+    public HashMap<Pair, Integer> extractDistancePairHashMapFromFile(String filename) {
         HashMap<Pair, Integer> map = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             StringBuilder sb = new StringBuilder();
@@ -54,7 +54,7 @@ public class HashMapUtils {
         return map;
     }
 
-    private static void saveToFile(String filename, String content) {
+    private void saveToFile(String filename, String content) {
         try (FileWriter fileWriter = new FileWriter(filename)) {
             fileWriter.write(content);
         } catch (IOException e) {

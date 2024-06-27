@@ -11,6 +11,9 @@ public class RouteOptimizer {
     private final CoordinateMatrix coordinateMatrix;
 
     @Autowired
+    private HashMapUtils hashMapUtils;
+
+    @Autowired
     public RouteOptimizer(CoordinateMatrix coordinateMatrix) {
         this.coordinateMatrix = coordinateMatrix;
     }
@@ -200,16 +203,16 @@ public class RouteOptimizer {
     //KRAEN METOD VRUSHA TO DETO E ZA FRONTENDA
     public ArrayList<List<int[]>> optimiseRoute(String[] products) {
 
-        HashMap<Pair, Integer> shortestDistances = HashMapUtils
+        HashMap<Pair, Integer> shortestDistances = hashMapUtils
                 .extractDistancePairHashMapFromFile("shortestDistances.json");
 
-        HashMap<Pair, Integer> productToCheckoutDistances = HashMapUtils
+        HashMap<Pair, Integer> productToCheckoutDistances = hashMapUtils
                 .extractDistancePairHashMapFromFile("productToCheckoutDistances.json");
 
-        HashMap<String, Integer> entranceToProductsDistances = HashMapUtils
+        HashMap<String, Integer> entranceToProductsDistances = hashMapUtils
                 .extractDistanceHashMapFromFile("entranceToProductsDistances.json");
 
-        HashMap<String, Integer> exitToCheckoutsDistances = HashMapUtils
+        HashMap<String, Integer> exitToCheckoutsDistances = hashMapUtils
                 .extractDistanceHashMapFromFile("exitToCheckoutsDistances.json");
 
         String entrance = "EN";
