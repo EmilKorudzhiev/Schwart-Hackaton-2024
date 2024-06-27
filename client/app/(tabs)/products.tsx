@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -30,18 +31,14 @@ const ProductList = ({ category, products }) => (
   </View>
 );
 
-const calculateRoute = () => {
-  const cart = rawProductData.filter(prod => prod.added);
-  let stringRep: string = "";
-  cart.forEach((product, index) => {
-    stringRep += product.id;
-    if (index !== cart.length - 1) stringRep += ",";
-  });
-  const params: ExpoRouter.UnknownInputParams = {
-    "cart": stringRep
+const goToCart = () => {
+  const params = {
+    message: "Hello World!"
   };
-  router.push({ pathname: "Map", params: params });
+  router.push({ pathname: "Cart", params: params });
 };
+
+
 
 const App = () => {
   const [fruits, setFruits] = useState([]);
