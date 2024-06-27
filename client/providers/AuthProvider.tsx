@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import * as SecureStore from "expo-secure-store";
 import axios, { AxiosError } from "axios";
+import {router} from "expo-router";
 
 interface AuthContextType {
   user: User | null;
@@ -136,6 +137,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.deleteItemAsync("user");
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("refreshToken");
+    router.navigate("(auth)/sign-in")
+
   };
         
   const refreshAccessToken = useCallback(

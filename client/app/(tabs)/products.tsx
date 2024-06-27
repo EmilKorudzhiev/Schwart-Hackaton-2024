@@ -7,7 +7,7 @@ import { useAuth } from '@/providers/AuthProvider'; // Adjust the path if necess
 
 const ProductPage = () => {
     const [groupedProducts, setGroupedProducts] = useState<{ [key: string]: Product[] }>({});
-    const  accessToken  = useAuth().accessToken;
+    const { accessToken } = useAuth();
 
     useEffect(() => {
         if (accessToken) {
@@ -19,19 +19,29 @@ const ProductPage = () => {
     }, [accessToken]);
 
     const fetchProducts = async () => {
+        const apiUrl = `${process.env.EXPO_PUBLIC_HOST}/api/v1/products/grouped-by-categories`;
+
+        console.log('Fetching products from:', apiUrl);
+        console.log('Using access token:', accessToken);
+
         try {
-            const response = await axios.get(`http://${process.env.EXPO_PUBLIC_HOST}/api/v1/products/grouped-by-categories`, {
+            const response = await axios.get(apiUrl, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
             if (response.status === 200) {
+                console.log('Products fetched successfully:', response.data);
                 setGroupedProducts(response.data);
             } else {
-                console.error('Failed to fetch products');
+                console.error('Failed to fetch products: Non-200 status code', response);
             }
         } catch (error) {
-            console.error('Error fetching products:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios error:', error.response?.data || error.message);
+            } else {
+                console.error('Unexpected error:', error);
+            }
         }
     };
 
