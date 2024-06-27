@@ -72,10 +72,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`);
+      console.log(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`)
       
       const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/authenticate`, { email, password });
 
+      
       await SecureStore.setItemAsync('user', JSON.stringify(response.data.user));
       await SecureStore.setItemAsync('accessToken', response.data.access_token);
       await SecureStore.setItemAsync('refreshToken', response.data.refresh_token);
@@ -108,7 +109,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshAccessToken = useCallback(async (refreshToken: string) => {
     try {
-      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/refresh`, { refreshToken });
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_HOST}/api/v1/auth/refresh`, {}, {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      });
       const { accessToken: newAccessToken } = response.data;
       await SecureStore.setItemAsync('accessToken', newAccessToken);
       setAccessToken(newAccessToken);
