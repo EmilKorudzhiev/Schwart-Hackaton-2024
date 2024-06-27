@@ -9,7 +9,6 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import React from 'react';
 
 export {
   // Catch any errors thrown by the Layout component.

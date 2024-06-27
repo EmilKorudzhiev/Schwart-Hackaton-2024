@@ -1,6 +1,6 @@
 import React from "react";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { Link, Redirect, Stack, Tabs } from "expo-router";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { Link, Redirect, Tabs } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -11,17 +11,7 @@ import { useAuth } from "@/providers/AuthProvider";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  //const { user, loading } = useAuth();
-  const loading = false;
-  const user = true;
-
-  const headerProfileButton = () => {
-    return (
-      <Link href="profile" style={{ marginRight: 20 }}>
-        <FontAwesome name="user" size={24} color="#FCF7F8" />
-      </Link>
-    );
-  };
+  const { user, loading } = useAuth();
 
   if (!loading) {
       return   <Tabs
@@ -75,52 +65,56 @@ export default function TabLayout() {
         />
       </Tabs>
     return user ? (
-      <Stack>
-        <Stack.Screen
-          name="products"
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          tabBarStyle: styles.tabBar,
+          tabBarLabelStyle: styles.tabBarLabel,
+          headerShown: useClientOnlyValue(false, true),
+        }}
+      >
+        <Tabs.Screen
+          name="index"
           options={{
-            title: "All Products",
-            headerRight: headerProfileButton,
-            
-            headerStyle: {
-              backgroundColor: "#009FB7",
-            },
-            headerTintColor: "#FCF7F8",
+            title: "Home",
+            headerShown: false,
+            tabBarIcon: ({ color }) => (
+              <Icon library="Entypo" name="home" color={color} />
+            ),
           }}
         />
-        <Stack.Screen
-          name="Map"
+        <Tabs.Screen
+          name="two"
           options={{
-            title: "Map",
-            headerRight: headerProfileButton,
-            headerStyle: {
-              backgroundColor: "#009FB7",
-            },
-            headerTintColor: "#FCF7F8",
+            title: "Findr",
+            tabBarIcon: ({ color }) => (
+              <Icon
+                library="MaterialCommunityIcons"
+                name="map-marker-path"
+                color={color}
+              />
+            ),
           }}
         />
-        <Stack.Screen
-          name="Cart"
+        <Tabs.Screen
+          name="cart"
           options={{
-            title: "Cart",
-            headerRight: headerProfileButton,
-            headerStyle: {
-              backgroundColor: "#009FB7",
-            },
-            headerTintColor: "#FCF7F8",
+            title: "My Cart",
+            tabBarIcon: ({ color }) => (
+              <Icon library="FontAwesome5" name="shopping-cart" color={color} />
+            ),
           }}
         />
-        <Stack.Screen
+        <Tabs.Screen
           name="profile"
           options={{
             title: "Profile",
-            headerStyle: {
-              backgroundColor: "#009FB7",
-            },
-            headerTintColor: "#FCF7F8",
+            tabBarIcon: ({ color }) => (
+              <Icon library="FontAwesome" name="user" color={color} />
+            ),
           }}
         />
-      </Stack>
+      </Tabs>
     ) : (
       <Redirect href="/(auth)/sign-in" />
     );

@@ -1,7 +1,6 @@
 import { Redirect } from "expo-router";
 import { useAuth } from "../providers/AuthProvider";
 import { Text } from "react-native";
-import React from "react";
 
 const Index = () => {
   const { user, loading } = useAuth();
