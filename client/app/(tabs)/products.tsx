@@ -1,3 +1,4 @@
+import IconInputField from "@/components/IconInputField";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,6 +13,7 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { FontAwesome } from '@expo/vector-icons';
 
 const ProductList = ({ category, products }) => (
   <View style={styles.category}>
@@ -78,13 +80,27 @@ const App = () => {
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.searchField}>
-        <View style={styles.searchBar}>
+{/*         <View style={styles.searchBar}>
           <TextInput
             placeholder="Search..."
             placeholderTextColor="#009FB7"
             style={styles.searchInput}
           />
-        </View>
+        </View> */}
+
+      <IconInputField
+        /* value={credentials.email} */
+        /* onChangeText={} */
+        placeholder="Search"
+        style={styles.input}
+        leftSide={
+          <FontAwesome
+            name="search"
+            size={24}
+            color="black"
+          />
+        }
+      />
       </View>
       <View style={styles.name}>
         <Text style={styles.heading}>Products</Text>
@@ -220,6 +236,14 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  input: {
+    width: "100%",
+    height: 50,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: "transparent",
+  }
 });
 
 export default App;
