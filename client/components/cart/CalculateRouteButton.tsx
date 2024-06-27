@@ -1,4 +1,6 @@
+import { ExpoRouter } from "@/.expo/types/router";
 import Product from "@/classes/Product";
+import { Link } from "expo-router";
 import { Button } from "react-native";
 
 interface CalculateRouteProps {
@@ -6,11 +8,15 @@ interface CalculateRouteProps {
 }
 
 export default function CalculateRouteButton({products}: CalculateRouteProps) {
-    const calculate = () => {
-        console.log(products.filter(prod => prod.added));
-    };
 
+    
+
+    const params: ExpoRouter.UnknownInputParams = {
+        "products": products.filter(prod => prod.added).toString()
+    };
     return (
-        <Button title="Calculate Route" onPress={calculate}/>
+        <Link href={{pathname: "Map", params: params}}>
+            <Button title="Calculate Route"/>
+        </Link>
     )
 }

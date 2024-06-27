@@ -11,4 +11,8 @@ export default class Product {
         this.category = productDetailCol[1];
         this.added = false;
     }
+
+    public toString() {
+        return this.id;
+    }
 }

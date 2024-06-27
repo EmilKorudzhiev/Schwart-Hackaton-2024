@@ -3,21 +3,18 @@ import { Button, TextInput, StyleSheet } from "react-native";
 import { Text, View } from '@/components/Themed'; 
 
 interface SearchBarProps {
-    products: Product[],
-    setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
-    onEmpty: () => void,
-    onNotEmpty: () => void
+    productData: Product[],
+    setProducts: React.Dispatch<React.SetStateAction<Product[]>>
 }
 
 
-export default function SearchBar({products, setProducts, onEmpty, onNotEmpty}: SearchBarProps) {
+export default function SearchBar({productData, setProducts}: SearchBarProps) {
     const handleChange = (newText: string) => {
         if (newText === "") {
-            onEmpty();
+            setProducts(productData);
         } else {
-            onNotEmpty();
             const regex = new RegExp(newText, 'i');
-            const filteredProducts = products.filter((product) => {
+            const filteredProducts = productData.filter((product) => {
                 return regex.test(product.name);
             });
             setProducts(filteredProducts);
@@ -40,7 +37,7 @@ const styles = StyleSheet.create({
     },
     searchBarInput: {
         width: "100%",
-        borderColor: "black"
+        borderColor: "green"
     },
     searchBarLabel: {
         textAlign: "center"
