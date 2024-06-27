@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,6 +23,10 @@ public class ProductController {
     ) {
         ProductDto product = productService.createProduct(createProductRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
+    @GetMapping("/grouped-by-categories")
+    public Map<String, List<ProductDto>> getAllProductsGroupedByCategories() {
+        return productService.getAllProductsGroupedByCategories();
     }
 
 //    @PutMapping("/{productId}")

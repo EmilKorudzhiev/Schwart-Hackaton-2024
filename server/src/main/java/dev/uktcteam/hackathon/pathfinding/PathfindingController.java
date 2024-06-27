@@ -15,9 +15,9 @@ public class PathfindingController {
 
     @GetMapping("{storeId}")
     public PathfindDto findPath(
-            @RequestBody Long[] productIds
+            @RequestBody String[] products
     ) {
-        return pathfindingService.findPath(productIds);
+        return pathfindingService.findPath(products);
     }
 
 }
