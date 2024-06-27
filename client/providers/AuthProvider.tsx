@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         "refreshToken",
         response.data.refresh_token
       );
-
+      
       setUser(response.data.user);
       setAccessToken(response.data.access_token);
       setRefreshToken(response.data.refresh_token);
@@ -137,7 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("refreshToken");
   };
-
+        
   const refreshAccessToken = useCallback(
     async (refreshToken: string) => {
       try {
