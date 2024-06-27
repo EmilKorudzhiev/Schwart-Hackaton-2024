@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import {
   GestureHandlerRootView,
@@ -23,6 +22,16 @@ import { useAuth } from "@/providers/AuthProvider";
 import axios from "axios";
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
+const gridRows = 20;
+const gridCols = 40;
+const squareSize = screenWidth / gridCols * 0.8;
+const categoryColors: { [key: string]: string } = {
+  Entry: "#98ff98",
+  Exit: "#ff5c5c",
+  Риба: "#caf0f8",
+  Плодове: "#d7a1f9",
+  Месо: "",
+};
 
 export default function ZoomableMap() {
   const scale = useSharedValue(1);
@@ -38,32 +47,28 @@ export default function ZoomableMap() {
     address: string;
     description: string;
     id: number;
-    // Add other properties if needed
   }
-  
+
   const [mapObjects, setMapObjects] = useState<MapObject | undefined>();
 
-  const {refreshAccessToken, signOut} = useAuth();
+  const { refreshAccessToken, signOut } = useAuth();
 
   const axiosInstance = useAxios(refreshAccessToken, signOut);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = axiosInstance.get("store/1");
         setMapObjects((await response).data);
-        
-        
       } catch (error) {
-        if(axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        if (axios.isAxiosError(error) && error.response) {
+          console.error(error.response.data);
         }
       }
     };
 
     fetchData();
-  }, [])
+  }, []);
 
   const panGesture = Gesture.Pan()
     .onBegin((event) => {
@@ -74,8 +79,10 @@ export default function ZoomableMap() {
     })
     .onUpdate((event) => {
       if (event.y <= screenHeight / 2) {
-        translateX.value = savedTranslateX.value + event.translationX * sensitivityFactor.value;
-        translateY.value = savedTranslateY.value + event.translationY * sensitivityFactor.value;
+        translateX.value =
+          savedTranslateX.value + event.translationX * sensitivityFactor.value;
+        translateY.value =
+          savedTranslateY.value + event.translationY * sensitivityFactor.value;
       }
     });
 
@@ -90,11 +97,10 @@ export default function ZoomableMap() {
       savedScale.value = scale.value;
     });
 
-
   const handleRecenter = () => {
     scale.value = withTiming(1);
     savedScale.value = 1;
-    sensitivityFactor.value = 1
+    sensitivityFactor.value = 1;
     translateX.value = withTiming(0);
     translateY.value = withTiming(0);
     savedTranslateX.value = 0;
@@ -111,60 +117,53 @@ export default function ZoomableMap() {
     };
   });
 
-  const drawCols = (y: number) => {
-    let cols = [];
-    for (let x = 0; x < 40; x++) {
-      cols.push(
-        <View
-          key={`col-${x}`}
-          style={{
-            width: screenWidth / 40,
-            height: screenWidth / 40,
-            borderWidth: 0.5,
-            borderColor: "rgba(0, 0, 0, 0.1)"
-          }}
-        />
-      );
-    }
-    return cols;
+  const drawCols = () => {
+    return Array.from({ length: gridCols }, (_, x) => (
+      <View
+        key={`col-${x}`}
+        style={{
+          width: squareSize,
+          height: squareSize,
+          borderWidth: 0.5,
+          borderColor: "rgba(0, 0, 0, 0.1)",
+        }}
+      />
+    ));
   };
 
   const drawRows = () => {
-    let rows = [];
-    for (let y = 0; y < 20; y++) {
-      rows.push(
-        <View key={`row-${y}`} style={{ flexDirection: "row" }}>
-          {drawCols(y)}
-        </View>
-      );
-    }
-    return rows;
+    return Array.from({ length: gridRows }, (_, y) => (
+      <View key={`row-${y}`} style={{ flexDirection: "row" }}>
+        {drawCols()}
+      </View>
+    ));
   };
 
   const drawRedSquares = () => {
     let squares: React.JSX.Element[] = [];
 
-    for(let y = 0; y < 21; y++) {
-      for(let x = 0; x < 41; x++) {
-        const isNotNull = mapObjects && mapObjects.itemDetails && mapObjects.itemDetails[x][y] !== null;
-        if(isNotNull) {
-          squares.push(
-            <View
-              key={`red-square-${x}-${y}`}
-              style={{
-                width: screenWidth / 40,
-                height: screenWidth / 40,
-                backgroundColor: mapObjects.itemDetails[x][y].category === "Риба" ? "aqua" : "red",
-                position: "absolute",
-                bottom: y * (screenWidth / 40) - screenWidth / 80,
-                left: x * (screenWidth / 40) - screenWidth / 80,
-                borderRadius: 1,
-                borderWidth: 0.5,
-              }}
-            />
-          );
+    if (mapObjects && mapObjects.itemDetails) {
+      for (let y = 0; y < gridRows + 1; y++) {
+        for (let x = 0; x < gridCols + 1; x++) {
+          const item = mapObjects.itemDetails[x] && mapObjects.itemDetails[x][y];
+          if (item) {
+            squares.push(
+              <View
+                key={`red-square-${x}-${y}`}
+                style={{
+                  width: squareSize,
+                  height: squareSize,
+                  backgroundColor: categoryColors[item.category] || "",
+                  position: "absolute",
+                  bottom: y * squareSize - squareSize / 2,
+                  left: x * squareSize - squareSize / 2,
+                  borderRadius: 1,
+                  borderWidth: 0.5,
+                }}
+              />
+            );
+          }
         }
-        
       }
     }
 
@@ -175,24 +174,118 @@ export default function ZoomableMap() {
     let lines: React.JSX.Element[] = [];
 
     const positions = [
-      { row: 10, col: 11 },
+      { row: 6, col: 1 },
+      { row: 6, col: 2 },
+      { row: 6, col: 3 },
+      { row: 6, col: 4 },
+      { row: 7, col: 5 },
+      { row: 7, col: 6},
+      { row: 7, col: 7},
+      { row: 6, col: 6 },
+      { row: 6, col: 7},
+      { row: 5, col: 8},
+      { row: 5, col: 9},
+      { row: 5, col: 10},
+      { row: 5, col: 11},
+      { row: 4, col: 11},
+      { row: 4, col: 12},
     ];
 
+    const orientationStyles = StyleSheet.create({
+      horizontal: {
+        width: squareSize,
+        height: squareSize / 4,
+      },
+      vertical: {
+        width: squareSize / 4,
+        height: squareSize,
+      },
+      diagonal: {
+        width: Math.sqrt(2 * Math.pow(squareSize, 2)),
+        height: squareSize / 4,
+      }
+    });
+
+    type RotateType = { rotate: string };
+
     positions.forEach((pos, index) => {
-      lines.push(
-        <View
-          key={`red-square-${index}`}
-          style={{
-            width: screenWidth / 40,
-            height: screenWidth / 160,
-            borderRadius: 5,
-            backgroundColor: "green",
-            position: "absolute",
-            bottom: pos.row * (screenWidth / 40) - screenWidth / 320,
-            left: pos.col * (screenWidth / 40),
-          }}
-        />
-      );
+      if (index + 1 !== positions.length) {
+        const nextPos = positions[index + 1];
+        let style = {};
+        let rotate: RotateType = { rotate: "0deg"};
+        const anchorX = Math.sqrt(2*Math.pow(squareSize, 2)) / 2;
+        const anchorY = squareSize / 64;
+
+        // HORIZONTAL LINES
+        if (nextPos.row === pos.row) {
+            if(nextPos.col > pos.col) {
+              style = {
+                ...orientationStyles.horizontal,
+                bottom: pos.row * (squareSize) - squareSize / 8,
+                left: pos.col * squareSize,
+              };
+            } else {
+              style = {
+                ...orientationStyles.horizontal,
+                bottom: pos.row * squareSize - squareSize / 8,
+                left: nextPos.col * squareSize,
+              };
+            }
+        // VERTICAL LINES
+        } else if (nextPos.col === pos.col) {
+            if(nextPos.row > pos.row) {
+              style = {
+                ...orientationStyles.vertical,
+                bottom: pos.row * squareSize - squareSize / 64,
+                left: pos.col * squareSize  - squareSize / 8,
+              };
+            } else {
+              style = {
+                ...orientationStyles.vertical,
+                bottom: nextPos.row * squareSize - squareSize / 64,
+                left: pos.col * squareSize  - squareSize / 8,
+              };
+            }
+        // DIAGONAL LINES
+        } else {
+          style = {
+            ...orientationStyles.diagonal,
+            bottom: pos.row * squareSize - squareSize / 8,
+            left: pos.col * squareSize,
+          };
+
+          if (nextPos.row > pos.row && nextPos.col > pos.col) {
+            rotate = { rotate: `-45deg` }
+          } else if (nextPos.row > pos.row && nextPos.col < pos.col) {
+            rotate = { rotate: `-135deg` }
+          } else if (nextPos.row < pos.row && nextPos.col > pos.col) {
+            rotate = { rotate: `45deg` }
+          } else if (nextPos.row < pos.row && nextPos.col < pos.col) {
+            rotate = { rotate: `135deg` }
+          }
+        }
+
+        lines.push(
+          <View
+            key={`line-${index}`}
+            style={[
+              style,
+              {
+                borderRadius: 5,
+                backgroundColor: "green",
+                position: "absolute",
+                transform: [
+                  { translateX: -anchorX },       
+                  { translateY: -anchorY },
+                  rotate,
+                  { translateY: anchorY },
+                  { translateX: anchorX },
+                ],
+              },
+            ]}
+          />
+        );
+      }
     });
 
     return lines;
@@ -202,17 +295,14 @@ export default function ZoomableMap() {
     <SafeAreaView style={styles.container}>
       <GestureHandlerRootView style={styles.gestureContainer}>
         <GestureDetector
-          gesture={Gesture.Simultaneous(
-            panGesture,
-            pinchGesture,
-          )}
+          gesture={Gesture.Simultaneous(panGesture, pinchGesture)}
         >
           <View style={[styles.upperHalf, { height: screenWidth }]}>
             <Animated.View style={[styles.content, animatedStyle]}>
-              <View style={{ ...styles.innerView}}>
+              <View style={{ ...styles.innerView }}>
                 {drawRows()}
                 {drawPath()}
-                {mapObjects && mapObjects.itemDetails && drawRedSquares()}
+                {drawRedSquares()}
               </View>
             </Animated.View>
             <TouchableOpacity style={styles.recenter} onPress={handleRecenter}>
@@ -259,7 +349,9 @@ const styles = StyleSheet.create({
   },
   innerView: {
     position: "relative",
-    borderColor: "rgba(0, 0, 0, 0.1)"
+    width: "auto",
+    height: "auto",
+    borderColor: "rgba(0, 0, 0, 0.1)",
   },
   recenter: {
     position: "absolute",
