@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,15 @@ public class ProductService {
         product = productRepository.save(product);
 
         return new ProductDto(product);
+    }
+     public Map<String, List<ProductDto>> getAllProductsGroupedByCategories() {
+        List<Product> products = productRepository.findAll();
+        Map<String, List<ProductDto>> groupedProducts = products.stream()
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory().getName(),
+                        Collectors.mapping(ProductDto::new, Collectors.toList())
+                ));
+        return groupedProducts;
     }
 
 }
