@@ -22,7 +22,7 @@ const ProductPage = () => {
         try {
             const response = await axios.get(`http://${process.env.EXPO_PUBLIC_HOST}/api/v1/products/grouped-by-categories`, {
                 headers: {
-                    Authorization: `${accessToken}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
             if (response.status === 200) {
