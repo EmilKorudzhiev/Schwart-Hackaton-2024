@@ -7,6 +7,7 @@ const Index = () => {
   const { user, loading } = useAuth();
 
   if(!loading) {
+    // return <Redirect href="(tabs)" />
     return user ? (
       <Redirect href="(tabs)" />
     ) : (

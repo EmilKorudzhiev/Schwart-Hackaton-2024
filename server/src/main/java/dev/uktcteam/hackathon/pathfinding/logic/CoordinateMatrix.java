@@ -1,5 +1,6 @@
 package dev.uktcteam.hackathon.pathfinding.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -9,6 +10,10 @@ import java.util.*;
 
 @Service
 public class CoordinateMatrix {
+
+    @Autowired
+    private HashMapUtils hashMapUtils;
+
 
     public String[][] extractMatrix() {
         // Define the size of the matrix
@@ -333,18 +338,18 @@ public class CoordinateMatrix {
         String[][] matrix = extractMatrix();
 
         HashMap<Pair, Integer> shortestDistances = findShortestDistancesBetweenProducts(matrix);
-        HashMapUtils.saveHashMapToFile(shortestDistances, "shortestDistances.json");
+        hashMapUtils.saveHashMapToFile(shortestDistances, "shortestDistances.json");
 
         HashMap<Pair, Integer> productToCheckoutDistances = findShortestDistancesBetweenProductsAndCheckouts(matrix);
-        HashMapUtils.saveHashMapToFile(productToCheckoutDistances,
+        hashMapUtils.saveHashMapToFile(productToCheckoutDistances,
                 "productToCheckoutDistances.json");
 
         HashMap<String, Integer> entranceToProductsDistances = findShortestDistancesFromEntranceToProducts(matrix);
-        HashMapUtils.saveHashMapToFile(entranceToProductsDistances,
+        hashMapUtils.saveHashMapToFile(entranceToProductsDistances,
                 "entranceToProductsDistances.json");
 
         HashMap<String, Integer> exitToCheckoutsDistances = findShortestDistancesFromExitToCheckouts(matrix);
-        HashMapUtils.saveHashMapToFile(exitToCheckoutsDistances,
+        hashMapUtils.saveHashMapToFile(exitToCheckoutsDistances,
                 "exitToCheckoutsDistances.json");
     }
 

@@ -48,7 +48,7 @@ const ProfilePage = () => {
               <Ionicons name="exit-outline" size={30} color="red" />
             </View>
             <View style={styles.nameContainer}>
-              <Text style={[styles.optionText, styles.logout]}>Logout</Text>
+              <Text style={[styles.optionText, styles.logout]} onPress={useAuth().signOut}>Logout</Text>
             </View>
           </View>
         </View>
