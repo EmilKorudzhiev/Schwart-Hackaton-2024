@@ -1,21 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, SafeAreaView } from 'react-native';
+import axios from 'axios';
 import Product from '../../classes/Product';
 import ProductList from '../../components/cart/ProductList';
+import { useAuth } from '@/providers/AuthProvider'; // Adjust the path if necessary
 
 const ProductPage = () => {
     const [groupedProducts, setGroupedProducts] = useState<{ [key: string]: Product[] }>({});
+    const  accessToken  = useAuth().accessToken;
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        if (accessToken) {
+            console.log('Access Token in ProductPage:', accessToken); // Debug log
+            fetchProducts();
+        } else {
+            console.error('No access token available in ProductPage');
+        }
+    }, [accessToken]);
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch(`http://${process.env.EXPO_PUBLIC_HOST}/api/v1/products/grouped-by-categories`);
-            if (response.ok) {
-                const data = await response.json();
-                setGroupedProducts(data);
+            const response = await axios.get(`http://${process.env.EXPO_PUBLIC_HOST}/api/v1/products/grouped-by-categories`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (response.status === 200) {
+                setGroupedProducts(response.data);
             } else {
                 console.error('Failed to fetch products');
             }
@@ -25,7 +36,6 @@ const ProductPage = () => {
     };
 
     const handleAdd = (product: Product) => {
-        // Handle add to cart or other actions
         console.log(`Added ${product.name} to cart`);
     };
 
