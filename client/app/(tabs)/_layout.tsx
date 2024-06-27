@@ -14,22 +14,62 @@ export default function TabLayout() {
   //const { user, loading } = useAuth();
   const loading = false;
   const user = true;
-  
+
   const headerProfileButton = () => {
     return (
-      <Link href="profile" style={{marginRight: 20}}>
-        <FontAwesome name="user" size={24} color="black" />
+      <Link href="profile" style={{ marginRight: 20 }}>
+        <FontAwesome name="user" size={24} color="#FCF7F8" />
       </Link>
-    )
+    );
   };
-  
+
   if (!loading) {
     return user ? (
       <Stack>
-        <Stack.Screen name="products" options={{title: "All Products", headerRight:headerProfileButton}}/>
-        <Stack.Screen name="Map" options={{title: "Map", headerRight:headerProfileButton }}/>
-        <Stack.Screen name="Cart" options={{title: "Cart", headerRight:headerProfileButton}}/>
-        <Stack.Screen name="profile" options={{title: "Profile"}}/>
+        <Stack.Screen
+          name="products"
+          options={{
+            title: "All Products",
+            headerRight: headerProfileButton,
+            
+            headerStyle: {
+              backgroundColor: "#009FB7",
+            },
+            headerTintColor: "#FCF7F8",
+          }}
+        />
+        <Stack.Screen
+          name="Map"
+          options={{
+            title: "Map",
+            headerRight: headerProfileButton,
+            headerStyle: {
+              backgroundColor: "#009FB7",
+            },
+            headerTintColor: "#FCF7F8",
+          }}
+        />
+        <Stack.Screen
+          name="Cart"
+          options={{
+            title: "Cart",
+            headerRight: headerProfileButton,
+            headerStyle: {
+              backgroundColor: "#009FB7",
+            },
+            headerTintColor: "#FCF7F8",
+          }}
+        />
+        <Stack.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            headerStyle: {
+              backgroundColor: "#009FB7",
+            },
+            headerTintColor: "#FCF7F8",
+          }}
+        />
       </Stack>
     ) : (
       <Redirect href="/(auth)/sign-in" />

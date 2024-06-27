@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
     searchBarInput: {
         width: "100%",
-        borderColor: "black"
+        borderColor: "green"
     },
     searchBarLabel: {
         textAlign: "center"
